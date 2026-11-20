@@ -96,8 +96,8 @@ Token ทั้งหมดอยู่ใน `packages/ui/src/styles/tokens.css
 
 | Token | Light (`:root`) | Dark (`[data-theme="dark"]`) | ใช้ใน |
 | --- | --- | --- | --- |
-| `--primary` | `oklch(0.555 0.163 48.998)` | `oklch(0.473 0.137 46.201)` | พื้น `default`, ตัวอักษร `link` |
-| `--primary-foreground` | `oklch(0.987 0.022 95.277)` | `oklch(0.987 0.022 95.277)` | ตัวอักษร `default` |
+| `--primary` | `oklch(0.555 0.163 48.998)` | `oklch(0.7 0.155 46.201)` | พื้น `default`, ตัวอักษร `link` (dark ปรับให้อ่อนลงเพื่อให้ `link` ผ่าน WCAG AA) |
+| `--primary-foreground` | `oklch(0.987 0.022 95.277)` | `oklch(0.147 0.004 49.25)` | ตัวอักษร `default` (dark เป็นสีเข้ม เพราะพื้นส้มอ่อนลง) |
 | `--secondary` | `oklch(0.967 0.001 286.375)` | `oklch(0.274 0.006 286.033)` | พื้น `secondary` |
 | `--secondary-foreground` | `oklch(0.21 0.006 285.885)` | `oklch(0.985 0 0)` | ตัวอักษร `secondary` |
 | `--muted` | `oklch(0.97 0.001 106.424)` | `oklch(0.268 0.007 34.298)` | hover ของ `outline` / `ghost` |

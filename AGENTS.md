@@ -144,11 +144,10 @@ deletes `dist/` first, so a running dev server briefly logs "Can't resolve '@sco
   its own tint at rest *and* hover (10%/20% light, 20%/30% dark) and muted text passes on `--muted`;
   the reasoning and ratios are in comments in `tokens.css`. When changing a color token, check the
   worst state (hover tints), not just rest — axe in Storybook only tests the light theme by default
-  (open a story with `&globals=theme:dark` to test dark). **Open issue:** in dark mode the `link`
-  variant of Button/Badge (`text-primary`, dark `--primary` = `oklch(0.473 0.137 46.201)`, on the
-  dark background) is 2.78:1; fixing it means a lighter dark `--primary` plus a dark
-  `--primary-foreground`, which visibly changes the default button in dark mode — needs a design
-  decision. Remaining third-party a11y findings: Base UI's focus guards trigger axe `aria-hidden-focus` on an
+  (open a story with `&globals=theme:dark` to test dark). Dark `--primary` is a lighter orange with
+  a **dark** `--primary-foreground` (my-app-2 had dark orange + white text, which left the `link`
+  variant at 2.79:1); keep text-on-primary ≥ 4.5:1 on the `primary/80` hover too, and remember the
+  Switch thumb uses `--primary-foreground` in dark mode. Remaining third-party a11y findings: Base UI's focus guards trigger axe `aria-hidden-focus` on an
   open Select/Menu, the Select listbox has no accessible name, and sonner's `richColors` palette
   fails contrast.
 - **Visual parity:** `apps/docs/app/components` ports my-app-2's `/playground` demo; compare
