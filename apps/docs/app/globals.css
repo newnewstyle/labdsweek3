@@ -1,0 +1,3 @@
+/* Mirrors the setup documented for consumers in packages/ui/README.md. */
+@import "tailwindcss";
+@import "@scope/ui/styles.css";
