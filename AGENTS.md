@@ -17,7 +17,7 @@ Publishing is planned for Week 4; until then only build and `pnpm pack --dry-run
 pnpm workspaces + Turborepo · React 19 · TypeScript (strict) · `@base-ui/react` · CSS Modules with
 Tailwind CSS v4 `@apply` · `cn` (npm package: clsx + tailwind-merge replacement) · `lucide-react` ·
 `sonner` · `tw-animate-css` · tsup + PostCSS · Vitest + Testing Library (jsdom) · Next.js 16 docs
-app · ESLint 9 flat config · Changesets.
+app · Storybook 10 (`@storybook/react-vite`) · ESLint 9 flat config · Changesets.
 
 pnpm is installed globally via `npm i -g pnpm` (this Node version has no corepack); the version is
 pinned in the root `packageManager` field.
@@ -35,6 +35,9 @@ packages/ui/
   postcss.config.mjs            # Tailwind for compiling the CSS Modules
   tsup.config.ts
 apps/docs/                      # Next.js docs/playground; depends on @scope/ui via workspace:*
+apps/storybook/                 # Storybook for reviewing each component's props and states
+  .storybook/                   # main.ts (addons, Tailwind vite plugin), preview.ts, preview-head.html
+  src/<Name>.stories.tsx        # one file per component
 eslint.config.mjs               # single root ESLint config for all workspaces
 ```
 
@@ -44,7 +47,9 @@ Run from the repo root.
 
 ```bash
 pnpm install
-pnpm dev                          # tsup --watch for ui + next dev (http://localhost:3000)
+pnpm dev                          # tsup --watch for ui + next dev (:3000) + storybook (:6006)
+pnpm --filter storybook-app dev   # Storybook only, http://127.0.0.1:6006 (binds 127.0.0.1, not localhost)
+pnpm --filter storybook-app build # static Storybook in apps/storybook/storybook-static (gitignored)
 pnpm build                        # ui first, then docs (turbo ^build)
 pnpm lint
 pnpm typecheck
@@ -56,8 +61,9 @@ cd packages/ui && pnpm pack --dry-run                   # list files that would 
 pnpm changeset                    # record a version bump for a user-facing change
 ```
 
-`apps/docs` consumes the **built** `packages/ui/dist`, not its source. If docs show stale styles or
-fail to resolve `@scope/ui`, run `pnpm --filter @scope/ui build`.
+`apps/docs` and `apps/storybook` consume the **built** `packages/ui/dist`, not its source. If they
+show stale styles or fail to resolve `@scope/ui`, run `pnpm --filter @scope/ui build`. `pnpm build`
+deletes `dist/` first, so a running dev server briefly logs "Can't resolve '@scope/ui'" — harmless.
 
 ## Architecture rules that span multiple files
 
@@ -105,6 +111,16 @@ fail to resolve `@scope/ui`, run `pnpm --filter @scope/ui build`.
 - **Tests** query by role/label and assert `data-*` attributes rather than class names (CSS Modules
   are not compiled in Vitest). `src/test/setup.ts` polyfills `PointerEvent` (Base UI Checkbox/Switch)
   and `matchMedia` (Sidebar's `useIsMobile`), which jsdom lacks.
+- **Storybook stories** (`apps/storybook/src/<Name>.stories.tsx`) import from `@scope/ui` like a
+  consumer; `src/styles.css` mirrors the consumer CSS setup and the theme toolbar sets
+  `data-theme` on `<html>`. Because stories use the built JS, prop tables are not inferred —
+  declare `argTypes` explicitly, and type option lists with the exported unions
+  (`satisfies readonly ButtonVariant[]`) so a renamed variant fails typecheck. Cover each prop
+  with a control plus a `States` matrix; `:hover`/`:focus-visible`/`:active` are forced with
+  `storybook-addon-pseudo-states` via `parameters.pseudo` selectors (`userEvent.tab()` focuses but
+  never triggers `:focus-visible`). `play` functions assert behavior (click, disabled, render prop).
+  Keep the a11y panel at 0 violations. Telemetry is disabled in `main.ts`. So far only Button has
+  stories.
 - **Visual parity:** `apps/docs/app/components` ports my-app-2's `/playground` demo; compare
   computed styles of the same `data-slot` elements in both apps after any style change. Measure
   after transitions finish and with the page visible — background tabs don't advance CSS
