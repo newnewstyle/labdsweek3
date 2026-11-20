@@ -106,8 +106,10 @@ export const Disabled: Story = {
     </div>
   ),
   play: async ({ args, canvasElement }) => {
-    const canvas = within(canvasElement);
-    await userEvent.click(canvas.getByRole("button", { name: "default" }));
+    const button = within(canvasElement).getByRole("button", { name: "default" });
+    await expect(button).toBeDisabled();
+    // Disabled buttons have pointer-events: none; skip user-event's guard to prove clicks are ignored.
+    await userEvent.setup({ pointerEventsCheck: 0 }).click(button);
     await expect(args.onClick).not.toHaveBeenCalled();
   },
 };

@@ -119,8 +119,38 @@ deletes `dist/` first, so a running dev server briefly logs "Can't resolve '@sco
   with a control plus a `States` matrix; `:hover`/`:focus-visible`/`:active` are forced with
   `storybook-addon-pseudo-states` via `parameters.pseudo` selectors (`userEvent.tab()` focuses but
   never triggers `:focus-visible`). `play` functions assert behavior (click, disabled, render prop).
-  Keep the a11y panel at 0 violations. Telemetry is disabled in `main.ts`. So far only Button has
-  stories.
+  Telemetry is disabled in `main.ts`. Every exported component has a story file; shared pieces
+  (`StateGrid`, `pseudoByAttribute`, `avatarDataUri`, `openOverlayStory`) live in
+  `src/story-helpers.tsx`. Multi-part components (Dialog, Select, Sidebar…) use a small
+  `Example*` wrapper as the meta `component` so its args map to the parts' props.
+- **Writing `play` functions against Base UI in a real browser** (all learned the hard way):
+  - Open Select/DropdownMenu with the keyboard (`trigger.focus(); userEvent.keyboard("{Enter}")`)
+    — user-event's synthetic click opens them unreliably, though a real click works.
+  - Select ignores `defaultOpen` on first render; open it in `play` instead.
+  - Portalled popups live in `document.body`, not `canvasElement`.
+  - Assert state (`aria-expanded`, `data-open`, `aria-selected`), not visibility/unmounting:
+    enter/exit transitions don't advance while the tab is in the background, so `toBeVisible()`
+    and "removed from DOM" checks are flaky.
+  - Disabled controls have `pointer-events: none`; use `userEvent.setup({ pointerEventsCheck: 0 })`
+    to prove clicks are ignored.
+  - sonner's toast store is global — use `findAllByText`.
+  - Tooltips open only on real keyboard focus (`:focus-visible`) or hover; test with `hover`.
+  - The Sidebar switches to its mobile Sheet below 768px (`useIsMobile`), including in a narrow
+    Storybook canvas.
+  - Storybook's `phase === "finished"` does not mean the play passed; check the
+    `storyFinished` event's `status`.
+- **Color contrast is a token concern.** `--destructive` (both themes) and light
+  `--muted-foreground` were adjusted from my-app-2's values so destructive text passes WCAG AA on
+  its own tint at rest *and* hover (10%/20% light, 20%/30% dark) and muted text passes on `--muted`;
+  the reasoning and ratios are in comments in `tokens.css`. When changing a color token, check the
+  worst state (hover tints), not just rest — axe in Storybook only tests the light theme by default
+  (open a story with `&globals=theme:dark` to test dark). **Open issue:** in dark mode the `link`
+  variant of Button/Badge (`text-primary`, dark `--primary` = `oklch(0.473 0.137 46.201)`, on the
+  dark background) is 2.78:1; fixing it means a lighter dark `--primary` plus a dark
+  `--primary-foreground`, which visibly changes the default button in dark mode — needs a design
+  decision. Remaining third-party a11y findings: Base UI's focus guards trigger axe `aria-hidden-focus` on an
+  open Select/Menu, the Select listbox has no accessible name, and sonner's `richColors` palette
+  fails contrast.
 - **Visual parity:** `apps/docs/app/components` ports my-app-2's `/playground` demo; compare
   computed styles of the same `data-slot` elements in both apps after any style change. Measure
   after transitions finish and with the page visible — background tabs don't advance CSS

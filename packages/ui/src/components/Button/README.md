@@ -105,7 +105,7 @@ Token ทั้งหมดอยู่ใน `packages/ui/src/styles/tokens.css
 | `--background` | `oklch(1 0 0)` | `oklch(0.147 0.004 49.25)` | พื้น `outline` (light) |
 | `--border` | `oklch(0.923 0.003 48.717)` | `oklch(1 0 0 / 10%)` | เส้นขอบ `outline` (light) |
 | `--input` | `oklch(0.923 0.003 48.717)` | `oklch(1 0 0 / 15%)` | เส้นขอบและพื้น `outline` (dark) |
-| `--destructive` | `oklch(0.577 0.245 27.325)` | `oklch(0.704 0.191 22.216)` | `destructive`, สถานะ `aria-invalid` |
+| `--destructive` | `oklch(0.49 0.2 27.325)` | `oklch(0.76 0.16 22.216)` | `destructive`, สถานะ `aria-invalid` (ปรับให้ผ่าน WCAG AA 4.5:1 ทั้งตอนปกติและ hover) |
 | `--ring` | `oklch(0.709 0.01 56.259)` | `oklch(0.553 0.013 58.071)` | วง focus |
 
 ปุ่มเรียก token ผ่าน utility ของ Tailwind (`bg-primary`, `text-destructive`, `ring-ring/50` …) ซึ่ง map ไว้ใน `@theme inline` เป็น `--color-<name>: var(--<name>)`
