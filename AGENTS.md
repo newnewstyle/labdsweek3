@@ -100,8 +100,15 @@ fail to resolve `@scope/ui`, run `pnpm --filter @scope/ui build`.
 - **Adding a component:** create `src/components/<Name>/` following the rules above, export it from
   `src/index.ts`, add it to `src/index.test.ts`, show it in `apps/docs`, add a changeset.
   Removing or renaming a public export is a major bump.
+- **`toast`** is re-exported from `sonner` (`src/components/Sonner/index.ts`) so consumers use the
+  same sonner instance as `Toaster` without installing it themselves.
 - **Tests** query by role/label and assert `data-*` attributes rather than class names (CSS Modules
-  are not compiled in Vitest).
+  are not compiled in Vitest). `src/test/setup.ts` polyfills `PointerEvent` (Base UI Checkbox/Switch)
+  and `matchMedia` (Sidebar's `useIsMobile`), which jsdom lacks.
+- **Visual parity:** `apps/docs/app/components` ports my-app-2's `/playground` demo; compare
+  computed styles of the same `data-slot` elements in both apps after any style change. Measure
+  after transitions finish and with the page visible — background tabs don't advance CSS
+  transitions, which reads as false opacity/translate differences.
 
 ## Publishing (Week 4)
 

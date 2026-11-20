@@ -1,3 +1,4 @@
+import { Toaster, TooltipProvider } from "@scope/ui";
 import type { Metadata } from "next";
 import { Geist_Mono, IBM_Plex_Sans_Thai } from "next/font/google";
 
@@ -23,7 +24,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="th" className={`${fontSans.variable} ${fontMono.variable}`}>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        {/* Same providers as the original app's root layout. */}
+        <TooltipProvider>{children}</TooltipProvider>
+        <Toaster />
+      </body>
     </html>
   );
 }
