@@ -1,0 +1,94 @@
+/*
+ * Button styles. Variants and sizes are selected with the data-variant /
+ * data-size attributes that Button.tsx sets from its props.
+ * Everything sits in @layer components so a utility passed via `className`
+ * (utilities layer) always wins.
+ */
+@reference "../../styles/reference.css";
+
+@layer components {
+  .button {
+    @apply inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none;
+    @apply focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50;
+    @apply active:not-aria-[haspopup]:translate-y-px;
+    @apply disabled:pointer-events-none disabled:opacity-50;
+    @apply aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20;
+    @apply dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40;
+    @apply [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4;
+  }
+
+  /* ---------- variants ---------- */
+
+  .button[data-variant="default"] {
+    @apply bg-primary text-primary-foreground hover:bg-primary/80;
+  }
+
+  .button[data-variant="outline"] {
+    @apply border-border bg-background hover:bg-muted hover:text-foreground;
+    @apply aria-expanded:bg-muted aria-expanded:text-foreground;
+    @apply dark:border-input dark:bg-input/30 dark:hover:bg-input/50;
+  }
+
+  .button[data-variant="secondary"] {
+    @apply bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)];
+    @apply aria-expanded:bg-secondary aria-expanded:text-secondary-foreground;
+  }
+
+  .button[data-variant="ghost"] {
+    @apply hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground;
+    @apply dark:hover:bg-muted/50;
+  }
+
+  .button[data-variant="destructive"] {
+    @apply bg-destructive/10 text-destructive hover:bg-destructive/20;
+    @apply focus-visible:border-destructive/40 focus-visible:ring-destructive/20;
+    @apply dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40;
+  }
+
+  .button[data-variant="link"] {
+    @apply text-primary underline-offset-4 hover:underline;
+  }
+
+  /* ---------- sizes ---------- */
+
+  .button[data-size="default"] {
+    @apply h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2;
+  }
+
+  .button[data-size="xs"] {
+    @apply h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs;
+    @apply has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5;
+    @apply [&_svg:not([class*='size-'])]:size-3;
+  }
+
+  .button[data-size="sm"] {
+    @apply h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem];
+    @apply has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5;
+    @apply [&_svg:not([class*='size-'])]:size-3.5;
+  }
+
+  .button[data-size="lg"] {
+    @apply h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2;
+  }
+
+  .button[data-size="icon"] {
+    @apply size-8;
+  }
+
+  .button[data-size="icon-xs"] {
+    @apply size-6 rounded-[min(var(--radius-md),10px)] [&_svg:not([class*='size-'])]:size-3;
+  }
+
+  .button[data-size="icon-sm"] {
+    @apply size-7 rounded-[min(var(--radius-md),12px)];
+  }
+
+  .button[data-size="icon-lg"] {
+    @apply size-9;
+  }
+
+  /* Small sizes keep the large radius when grouped in a button group. */
+  [data-slot="button-group"] .button:is([data-size="xs"], [data-size="sm"], [data-size="icon-xs"], [data-size="icon-sm"]) {
+    @apply rounded-lg;
+  }
+}

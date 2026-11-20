@@ -1,0 +1,7 @@
+/*
+ * Build-time only (not shipped). Every *.module.css does `@reference "../../styles/reference.css"`
+ * so `@apply` can use Tailwind utilities, the shadcn/tw-animate variants and the design tokens.
+ * Replaces `@reference "../../../app/globals.css"` from the original app.
+ */
+@import "tailwindcss";
+@import "./tokens.css";

@@ -1,0 +1,10 @@
+@reference "../../styles/reference.css";
+
+@layer components {
+  /* Base UI sets data-orientation on the element. */
+  .separator {
+    @apply shrink-0 bg-border;
+    @apply data-horizontal:h-px data-horizontal:w-full;
+    @apply data-vertical:w-px data-vertical:self-stretch;
+  }
+}

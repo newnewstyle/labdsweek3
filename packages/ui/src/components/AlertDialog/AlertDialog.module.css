@@ -1,0 +1,63 @@
+/*
+ * AlertDialog. Size comes from data-size on the content; child parts react
+ * to it via the `.content[data-size=…] .part` selectors below.
+ */
+@reference "../../styles/reference.css";
+
+@layer components {
+  .overlay {
+    @apply fixed inset-0 isolate z-50 bg-black/10 duration-100 supports-backdrop-filter:backdrop-blur-xs;
+    @apply data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0;
+  }
+
+  .content {
+    @apply fixed top-1/2 left-1/2 z-50 grid w-full max-w-xs -translate-x-1/2 -translate-y-1/2 gap-4 rounded-xl bg-popover p-4 text-popover-foreground ring-1 ring-foreground/10 duration-100 outline-none;
+    @apply data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95;
+    @apply data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95;
+  }
+
+  .content[data-size="default"] {
+    @apply sm:max-w-sm;
+  }
+
+  .header {
+    @apply grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center;
+    @apply has-data-[slot=alert-dialog-media]:grid-rows-[auto_auto_1fr] has-data-[slot=alert-dialog-media]:gap-x-4;
+  }
+
+  .footer {
+    @apply -mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-xl border-t bg-muted/50 p-4 sm:flex-row sm:justify-end;
+  }
+
+  .media {
+    @apply mb-2 inline-flex size-10 items-center justify-center rounded-md bg-muted;
+    @apply *:[svg:not([class*='size-'])]:size-6;
+  }
+
+  .title {
+    @apply font-heading text-base font-semibold;
+  }
+
+  .description {
+    @apply text-sm text-balance text-muted-foreground md:text-pretty;
+    @apply *:[a]:underline *:[a]:underline-offset-3 *:[a]:hover:text-foreground;
+  }
+
+  /* Small dialog: two equal-width buttons. */
+  .content[data-size="sm"] .footer {
+    @apply grid grid-cols-2;
+  }
+
+  /* Default dialog on wider screens: left-aligned, media beside the text. */
+  .content[data-size="default"] .header {
+    @apply sm:place-items-start sm:text-left sm:has-data-[slot=alert-dialog-media]:grid-rows-[auto_1fr];
+  }
+
+  .content[data-size="default"] .media {
+    @apply sm:row-span-2;
+  }
+
+  .content[data-size="default"]:has([data-slot="alert-dialog-media"]) .title {
+    @apply sm:col-start-2;
+  }
+}

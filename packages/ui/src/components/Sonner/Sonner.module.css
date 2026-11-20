@@ -1,0 +1,11 @@
+@reference "../../styles/reference.css";
+
+@layer components {
+  .icon {
+    @apply size-4;
+  }
+
+  .spinner {
+    @apply size-4 animate-spin;
+  }
+}

@@ -1,0 +1,103 @@
+/* Select. Popup uses the same translucent surface as DropdownMenu. */
+@reference "../../styles/reference.css";
+
+@layer components {
+  /* ---------- trigger ---------- */
+
+  .trigger {
+    @apply flex w-fit items-center justify-between gap-1.5 rounded-lg border border-input bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-colors outline-none select-none;
+    @apply focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50;
+    @apply disabled:cursor-not-allowed disabled:opacity-50;
+    @apply aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20;
+    @apply data-placeholder:text-muted-foreground;
+    @apply *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5;
+    @apply dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40;
+    @apply [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4;
+  }
+
+  .trigger[data-size="default"] {
+    @apply h-8;
+  }
+
+  .trigger[data-size="sm"] {
+    @apply h-7 rounded-[min(var(--radius-md),10px)];
+  }
+
+  .triggerIcon {
+    @apply pointer-events-none size-4 text-muted-foreground;
+  }
+
+  .value {
+    @apply flex flex-1 text-left;
+  }
+
+  /* ---------- popup ---------- */
+
+  .positioner {
+    @apply isolate z-50;
+  }
+
+  .content {
+    @apply relative isolate z-50 max-h-(--available-height) w-(--anchor-width) min-w-36 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg bg-popover/70 text-popover-foreground shadow-md ring-1 ring-foreground/10 duration-100;
+    /* frosted-glass backdrop */
+    @apply before:pointer-events-none before:absolute before:inset-0 before:-z-1 before:rounded-[inherit] before:backdrop-blur-2xl before:backdrop-saturate-150;
+    /* items: tint on focus / keyboard highlight */
+    @apply **:data-[slot$=-item]:focus:bg-foreground/10 **:data-[slot$=-item]:data-highlighted:bg-foreground/10;
+    @apply **:data-[slot$=-separator]:bg-foreground/5;
+    @apply **:data-[slot$=-trigger]:focus:bg-foreground/10 **:data-[slot$=-trigger]:aria-expanded:bg-foreground/10!;
+    @apply **:data-[variant=destructive]:**:text-accent-foreground! **:data-[variant=destructive]:text-accent-foreground! **:data-[variant=destructive]:focus:bg-foreground/10!;
+    /* open / close animation (none when the popup is aligned over the trigger) */
+    @apply animate-none! data-[align-trigger=true]:animate-none;
+    @apply data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95;
+    @apply data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95;
+    @apply data-[side=top]:slide-in-from-bottom-2 data-[side=bottom]:slide-in-from-top-2;
+    @apply data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2;
+    @apply data-[side=inline-start]:slide-in-from-right-2 data-[side=inline-end]:slide-in-from-left-2;
+  }
+
+  .scrollButton {
+    @apply z-10 flex w-full cursor-default items-center justify-center bg-popover py-1 [&_svg:not([class*='size-'])]:size-4;
+  }
+
+  .scrollUp {
+    @apply top-0;
+  }
+
+  .scrollDown {
+    @apply bottom-0;
+  }
+
+  /* ---------- items ---------- */
+
+  .group {
+    @apply scroll-my-1 p-1;
+  }
+
+  .label {
+    @apply px-1.5 py-1 text-xs text-muted-foreground;
+  }
+
+  .item {
+    @apply relative flex w-full cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none;
+    @apply focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground;
+    @apply data-disabled:pointer-events-none data-disabled:opacity-50;
+    @apply [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4;
+    @apply *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2;
+  }
+
+  .itemText {
+    @apply flex flex-1 shrink-0 gap-2 whitespace-nowrap;
+  }
+
+  .itemIndicator {
+    @apply pointer-events-none absolute right-2 flex size-4 items-center justify-center;
+  }
+
+  .itemIndicatorIcon {
+    @apply pointer-events-none;
+  }
+
+  .separator {
+    @apply pointer-events-none -mx-1 my-1 h-px bg-border;
+  }
+}

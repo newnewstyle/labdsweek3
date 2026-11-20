@@ -1,0 +1,37 @@
+/* Switch. Size from data-size on the root; Base UI sets data-checked/unchecked. */
+@reference "../../styles/reference.css";
+
+@layer components {
+  .switch {
+    @apply relative inline-flex shrink-0 items-center rounded-full border border-transparent transition-all outline-none;
+    /* larger invisible hit area */
+    @apply after:absolute after:-inset-x-3 after:-inset-y-2;
+    @apply focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50;
+    @apply aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20;
+    @apply dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40;
+    @apply data-checked:bg-primary data-unchecked:bg-input dark:data-unchecked:bg-input/80;
+    @apply data-disabled:cursor-not-allowed data-disabled:opacity-50;
+  }
+
+  .switch[data-size="default"] {
+    @apply h-[18.4px] w-[32px];
+  }
+
+  .switch[data-size="sm"] {
+    @apply h-[14px] w-[24px];
+  }
+
+  .thumb {
+    @apply pointer-events-none block rounded-full bg-background ring-0 transition-transform;
+    @apply data-checked:translate-x-[calc(100%-2px)] data-unchecked:translate-x-0;
+    @apply dark:data-checked:bg-primary-foreground dark:data-unchecked:bg-foreground;
+  }
+
+  .switch[data-size="default"] .thumb {
+    @apply size-4;
+  }
+
+  .switch[data-size="sm"] .thumb {
+    @apply size-3;
+  }
+}

@@ -1,0 +1,62 @@
+/* Avatar. Parts size themselves from the avatar's data-size. */
+@reference "../../styles/reference.css";
+
+@layer components {
+  .avatar {
+    @apply relative flex size-8 shrink-0 rounded-full select-none;
+    @apply after:absolute after:inset-0 after:rounded-full after:border after:border-border after:mix-blend-darken dark:after:mix-blend-lighten;
+  }
+
+  .avatar[data-size="sm"] {
+    @apply size-6;
+  }
+
+  .avatar[data-size="lg"] {
+    @apply size-10;
+  }
+
+  .image {
+    @apply aspect-square size-full rounded-full object-cover;
+  }
+
+  .fallback {
+    @apply flex size-full items-center justify-center rounded-full bg-muted text-sm text-muted-foreground;
+  }
+
+  .avatar[data-size="sm"] .fallback {
+    @apply text-xs;
+  }
+
+  .badge {
+    @apply absolute right-0 bottom-0 z-10 inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground bg-blend-color ring-2 ring-background select-none;
+  }
+
+  .avatar[data-size="sm"] .badge {
+    @apply size-2 [&>svg]:hidden;
+  }
+
+  .avatar[data-size="default"] .badge {
+    @apply size-2.5 [&>svg]:size-2;
+  }
+
+  .avatar[data-size="lg"] .badge {
+    @apply size-3 [&>svg]:size-2;
+  }
+
+  .group {
+    @apply flex -space-x-2 *:data-[slot=avatar]:ring-2 *:data-[slot=avatar]:ring-background;
+  }
+
+  .groupCount {
+    @apply relative flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-sm text-muted-foreground ring-2 ring-background [&>svg]:size-4;
+  }
+
+  /* The "+N" bubble matches the size of the avatars in its group. */
+  .group:has([data-size="lg"]) .groupCount {
+    @apply size-10 [&>svg]:size-5;
+  }
+
+  .group:has([data-size="sm"]) .groupCount {
+    @apply size-6 [&>svg]:size-3;
+  }
+}

@@ -1,0 +1,94 @@
+/*
+ * DropdownMenu. The popup is a translucent, blurred surface; items inside it
+ * get a subtle foreground tint on focus/highlight instead of the accent color.
+ */
+@reference "../../styles/reference.css";
+
+@layer components {
+  .positioner {
+    @apply isolate z-50 outline-none;
+  }
+
+  /* ---------- popup surface (content + sub-content) ---------- */
+
+  .content {
+    @apply relative z-50 max-h-(--available-height) w-(--anchor-width) min-w-32 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg bg-popover/70 p-1 text-popover-foreground shadow-md ring-1 ring-foreground/10 duration-100 outline-none;
+    /* frosted-glass backdrop */
+    @apply before:pointer-events-none before:absolute before:inset-0 before:-z-1 before:rounded-[inherit] before:backdrop-blur-2xl before:backdrop-saturate-150;
+    /* items: tint on focus / keyboard highlight */
+    @apply **:data-[slot$=-item]:focus:bg-foreground/10 **:data-[slot$=-item]:data-highlighted:bg-foreground/10;
+    @apply **:data-[slot$=-separator]:bg-foreground/5;
+    @apply **:data-[slot$=-trigger]:focus:bg-foreground/10 **:data-[slot$=-trigger]:aria-expanded:bg-foreground/10!;
+    @apply **:data-[variant=destructive]:**:text-accent-foreground! **:data-[variant=destructive]:text-accent-foreground! **:data-[variant=destructive]:focus:bg-foreground/10!;
+    /* open / close animation */
+    @apply animate-none! data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95;
+    @apply data-closed:animate-out data-closed:overflow-hidden data-closed:fade-out-0 data-closed:zoom-out-95;
+    @apply data-[side=top]:slide-in-from-bottom-2 data-[side=bottom]:slide-in-from-top-2;
+    @apply data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2;
+    @apply data-[side=inline-start]:slide-in-from-right-2 data-[side=inline-end]:slide-in-from-left-2;
+  }
+
+  .subContent {
+    @apply w-auto min-w-[96px] shadow-lg;
+  }
+
+  /* ---------- items ---------- */
+
+  .label {
+    @apply px-1.5 py-1 text-xs font-medium text-muted-foreground data-inset:pl-7;
+  }
+
+  .item,
+  .subTrigger,
+  .checkboxItem,
+  .radioItem {
+    @apply relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none;
+    @apply focus:bg-accent focus:text-accent-foreground data-inset:pl-7;
+    @apply [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4;
+  }
+
+  .item,
+  .checkboxItem,
+  .radioItem {
+    @apply data-disabled:pointer-events-none data-disabled:opacity-50;
+  }
+
+  .item {
+    @apply not-data-[variant=destructive]:focus:**:text-accent-foreground;
+  }
+
+  .item[data-variant="destructive"] {
+    @apply text-destructive focus:bg-destructive/10 focus:text-destructive dark:focus:bg-destructive/20 *:[svg]:text-destructive;
+  }
+
+  .subTrigger {
+    @apply not-data-[variant=destructive]:focus:**:text-accent-foreground;
+    @apply data-popup-open:bg-accent data-popup-open:text-accent-foreground data-open:bg-accent data-open:text-accent-foreground;
+  }
+
+  .subTriggerIcon {
+    @apply ml-auto;
+  }
+
+  /* checkbox / radio items leave room on the right for the check mark */
+  .checkboxItem,
+  .radioItem {
+    @apply pr-8 focus:**:text-accent-foreground;
+  }
+
+  .itemIndicator {
+    @apply pointer-events-none absolute right-2 flex items-center justify-center;
+  }
+
+  .separator {
+    @apply -mx-1 my-1 h-px bg-border;
+  }
+
+  .shortcut {
+    @apply ml-auto text-xs tracking-widest text-muted-foreground;
+  }
+
+  [data-slot="dropdown-menu-item"]:focus .shortcut {
+    @apply text-accent-foreground;
+  }
+}

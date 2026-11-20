@@ -1,0 +1,364 @@
+/*
+ * Sidebar.
+ *
+ * The desktop root (.root) carries the state everything else reacts to:
+ *   data-state       expanded | collapsed
+ *   data-collapsible offcanvas | icon | ""   (only set while collapsed)
+ *   data-variant     sidebar | floating | inset
+ *   data-side        left | right
+ * Rules below read those with `.root[data-…] .part` (descendants) and
+ * `.root[data-…] ~ .inset` (the main area, a sibling).
+ * Inside a menu item, the button's state reaches its siblings with
+ * `.menuButton[data-…] ~ .part`.
+ */
+@reference "../../styles/reference.css";
+
+@layer components {
+  /* ===================== layout shell ===================== */
+
+  .wrapper {
+    @apply flex min-h-svh w-full;
+  }
+
+  .wrapper:has(> [data-slot="sidebar"][data-variant="inset"]) {
+    @apply bg-sidebar;
+  }
+
+  /* collapsible="none": a plain column */
+  .static {
+    @apply flex h-full w-(--sidebar-width) flex-col bg-sidebar text-sidebar-foreground;
+  }
+
+  /* mobile: rendered inside a Sheet */
+  .mobile {
+    @apply w-(--sidebar-width) bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden;
+  }
+
+  .mobileInner {
+    @apply flex h-full w-full flex-col;
+  }
+
+  .srOnly {
+    @apply sr-only;
+  }
+
+  /* desktop */
+  .root {
+    @apply hidden text-sidebar-foreground md:block;
+  }
+
+  /* Reserves space in the page flow so content isn't hidden under the sidebar. */
+  .gap {
+    @apply relative w-(--sidebar-width) bg-transparent transition-[width] duration-200 ease-linear;
+  }
+
+  .container {
+    @apply fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex;
+  }
+
+  .container[data-side="left"] {
+    @apply left-0;
+  }
+
+  .container[data-side="right"] {
+    @apply right-0;
+  }
+
+  .inner {
+    @apply flex size-full flex-col bg-sidebar;
+  }
+
+  /* ----- side ----- */
+
+  .root[data-side="right"] .gap {
+    @apply rotate-180;
+  }
+
+  .root[data-variant="sidebar"][data-side="left"] .container {
+    @apply border-r;
+  }
+
+  .root[data-variant="sidebar"][data-side="right"] .container {
+    @apply border-l;
+  }
+
+  /* ----- collapsed: off-canvas (slides out) ----- */
+
+  .root[data-collapsible="offcanvas"] .gap {
+    @apply w-0;
+  }
+
+  .root[data-collapsible="offcanvas"] .container[data-side="left"] {
+    @apply left-[calc(var(--sidebar-width)*-1)];
+  }
+
+  .root[data-collapsible="offcanvas"] .container[data-side="right"] {
+    @apply right-[calc(var(--sidebar-width)*-1)];
+  }
+
+  /* ----- collapsed: icon rail ----- */
+
+  .root[data-variant="sidebar"][data-collapsible="icon"] :is(.gap, .container) {
+    @apply w-(--sidebar-width-icon);
+  }
+
+  .root:is([data-variant="floating"], [data-variant="inset"]) .container {
+    @apply p-2;
+  }
+
+  .root:is([data-variant="floating"], [data-variant="inset"])[data-collapsible="icon"] .gap {
+    @apply w-[calc(var(--sidebar-width-icon)+(--spacing(4)))];
+  }
+
+  .root:is([data-variant="floating"], [data-variant="inset"])[data-collapsible="icon"] .container {
+    @apply w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)];
+  }
+
+  /* ----- floating variant ----- */
+
+  .root[data-variant="floating"] .inner {
+    @apply rounded-lg shadow-sm ring-1 ring-sidebar-border;
+  }
+
+  /* ----- main area next to an inset sidebar ----- */
+
+  .inset {
+    @apply relative flex w-full flex-1 flex-col bg-background;
+  }
+
+  .root[data-variant="inset"] ~ .inset {
+    @apply md:m-2 md:ml-0 md:rounded-xl md:shadow-sm;
+  }
+
+  .root[data-variant="inset"][data-state="collapsed"] ~ .inset {
+    @apply md:ml-2;
+  }
+
+  /* ===================== rail (thin click-to-toggle edge) ===================== */
+
+  .rail {
+    @apply absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear sm:flex;
+    @apply after:absolute after:inset-y-0 after:start-1/2 after:w-[2px] hover:after:bg-sidebar-border;
+  }
+
+  .root[data-side="left"] .rail {
+    @apply -right-4 cursor-w-resize;
+  }
+
+  .root[data-side="right"] .rail {
+    @apply left-0 cursor-e-resize;
+  }
+
+  .root[data-side="left"][data-state="collapsed"] .rail {
+    @apply cursor-e-resize;
+  }
+
+  .root[data-side="right"][data-state="collapsed"] .rail {
+    @apply cursor-w-resize;
+  }
+
+  .root[data-collapsible="offcanvas"] .rail {
+    @apply translate-x-0 after:left-full hover:bg-sidebar;
+  }
+
+  .root[data-side="left"][data-collapsible="offcanvas"] .rail {
+    @apply -right-2;
+  }
+
+  .root[data-side="right"][data-collapsible="offcanvas"] .rail {
+    @apply -left-2;
+  }
+
+  /* ===================== sections ===================== */
+
+  .header,
+  .footer {
+    @apply flex flex-col gap-2 p-2;
+  }
+
+  /* Higher specificity than Input / Separator's own class. */
+  .input[data-slot="sidebar-input"] {
+    @apply h-8 w-full bg-background shadow-none;
+  }
+
+  .separator[data-slot="sidebar-separator"] {
+    @apply mx-2 w-auto bg-sidebar-border;
+  }
+
+  .content {
+    @apply no-scrollbar flex min-h-0 flex-1 flex-col gap-0 overflow-auto;
+  }
+
+  .root[data-collapsible="icon"] .content {
+    @apply overflow-hidden;
+  }
+
+  /* ===================== groups ===================== */
+
+  .group {
+    @apply relative flex w-full min-w-0 flex-col p-2;
+  }
+
+  .groupLabel {
+    @apply flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium text-sidebar-foreground/70 ring-sidebar-ring outline-hidden transition-[margin,opacity] duration-200 ease-linear;
+    @apply focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0;
+  }
+
+  .root[data-collapsible="icon"] .groupLabel {
+    @apply -mt-8 opacity-0;
+  }
+
+  .groupAction,
+  .menuAction {
+    @apply absolute flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform;
+    @apply hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2;
+    /* bigger touch target on small screens */
+    @apply after:absolute after:-inset-2 md:after:hidden;
+    @apply [&>svg]:size-4 [&>svg]:shrink-0;
+  }
+
+  .groupAction {
+    @apply top-3.5 right-3;
+  }
+
+  .groupContent {
+    @apply w-full text-sm;
+  }
+
+  /* ===================== menu ===================== */
+
+  .menu {
+    @apply flex w-full min-w-0 flex-col gap-0;
+  }
+
+  .menuItem {
+    @apply relative;
+  }
+
+  .menuButton {
+    @apply flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm ring-sidebar-ring outline-hidden transition-[width,height,padding];
+    @apply hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2;
+    @apply active:bg-sidebar-accent active:text-sidebar-accent-foreground;
+    @apply disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50;
+    @apply data-open:hover:bg-sidebar-accent data-open:hover:text-sidebar-accent-foreground;
+    @apply data-active:bg-sidebar-accent data-active:font-medium data-active:text-sidebar-accent-foreground;
+    @apply [&_svg]:size-4 [&_svg]:shrink-0 [&>span:last-child]:truncate;
+  }
+
+  .menuButton[data-variant="outline"] {
+    @apply bg-background shadow-[0_0_0_1px_var(--sidebar-border)] hover:shadow-[0_0_0_1px_var(--sidebar-accent)];
+  }
+
+  .menuButton[data-size="default"] {
+    @apply h-8 text-sm;
+  }
+
+  .menuButton[data-size="sm"] {
+    @apply h-7 text-xs;
+  }
+
+  .menuButton[data-size="lg"] {
+    @apply h-12 text-sm;
+  }
+
+  /* leave room for a trailing action button */
+  .menuItem:has([data-sidebar="menu-action"]) .menuButton {
+    @apply pr-8;
+  }
+
+  .root[data-collapsible="icon"] .menuButton {
+    @apply size-8! p-2!;
+  }
+
+  .root[data-collapsible="icon"] .menuButton[data-size="lg"] {
+    @apply p-0!;
+  }
+
+  /* ----- action & badge sit on top of the button, aligned to its size ----- */
+
+  .menuAction {
+    @apply top-1.5 right-1;
+  }
+
+  .menuBadge {
+    @apply pointer-events-none absolute right-1 flex h-5 min-w-5 items-center justify-center rounded-md px-1 text-xs font-medium text-sidebar-foreground tabular-nums select-none;
+  }
+
+  .menuButton[data-size="default"] ~ :is(.menuAction, .menuBadge) {
+    @apply top-1.5;
+  }
+
+  .menuButton[data-size="sm"] ~ :is(.menuAction, .menuBadge) {
+    @apply top-1;
+  }
+
+  .menuButton[data-size="lg"] ~ :is(.menuAction, .menuBadge) {
+    @apply top-2.5;
+  }
+
+  .menuButton:hover ~ :is(.menuAction, .menuBadge) {
+    @apply text-sidebar-accent-foreground;
+  }
+
+  .menuButton[data-active] ~ .menuBadge {
+    @apply text-sidebar-accent-foreground;
+  }
+
+  /* showOnHover: hidden on desktop until the item is hovered/focused */
+  .menuAction[data-show-on-hover] {
+    @apply aria-expanded:opacity-100 md:opacity-0;
+  }
+
+  .menuItem:is(:hover, :focus-within) .menuAction[data-show-on-hover] {
+    @apply opacity-100;
+  }
+
+  .menuButton[data-active] ~ .menuAction[data-show-on-hover] {
+    @apply text-sidebar-accent-foreground;
+  }
+
+  .root[data-collapsible="icon"] :is(.groupAction, .menuAction, .menuBadge, .menuSub, .menuSubButton) {
+    @apply hidden;
+  }
+
+  /* ----- skeleton ----- */
+
+  .menuSkeleton {
+    @apply flex h-8 items-center gap-2 rounded-md px-2;
+  }
+
+  .menuSkeletonIcon {
+    @apply size-4 rounded-md;
+  }
+
+  .menuSkeletonText {
+    @apply h-4 max-w-(--skeleton-width) flex-1;
+  }
+
+  /* ----- sub menu ----- */
+
+  .menuSub {
+    @apply mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l border-sidebar-border px-2.5 py-0.5;
+  }
+
+  .menuSubItem {
+    @apply relative;
+  }
+
+  .menuSubButton {
+    @apply flex h-7 min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-md px-2 text-sidebar-foreground ring-sidebar-ring outline-hidden;
+    @apply hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2;
+    @apply active:bg-sidebar-accent active:text-sidebar-accent-foreground;
+    @apply disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50;
+    @apply data-active:bg-sidebar-accent data-active:text-sidebar-accent-foreground;
+    @apply [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:text-sidebar-accent-foreground;
+  }
+
+  .menuSubButton[data-size="md"] {
+    @apply text-sm;
+  }
+
+  .menuSubButton[data-size="sm"] {
+    @apply text-xs;
+  }
+}
