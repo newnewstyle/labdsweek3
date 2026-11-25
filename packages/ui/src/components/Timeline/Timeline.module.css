@@ -1,0 +1,57 @@
+/*
+ * Timeline: a vertical line of events, newest first by convention. Each
+ * dot sits on the line; tone tints the dot (the title still says what
+ * happened, so colour is never the only signal).
+ */
+@reference "../../styles/reference.css";
+
+@layer components {
+  .timeline {
+    @apply flex flex-col;
+  }
+
+  .item {
+    @apply relative flex gap-3 pb-5 last:pb-0;
+  }
+
+  /* connecting line, from below this dot to the next one */
+  .item:not(:last-child)::before {
+    @apply absolute top-7 bottom-1 left-3 w-px -translate-x-1/2 bg-border content-[''];
+  }
+
+  .dot {
+    @apply relative z-10 flex size-6 shrink-0 items-center justify-center rounded-full border bg-background text-muted-foreground [&_svg]:size-3.5;
+  }
+
+  .item[data-tone="success"] .dot {
+    @apply border-success/30 bg-success/10 text-success;
+  }
+
+  .item[data-tone="warning"] .dot {
+    @apply border-warning/30 bg-warning/10 text-warning;
+  }
+
+  .item[data-tone="destructive"] .dot {
+    @apply border-destructive/30 bg-destructive/10 text-destructive;
+  }
+
+  .body {
+    @apply flex min-w-0 flex-1 flex-col gap-1 pt-0.5;
+  }
+
+  .header {
+    @apply flex flex-wrap items-baseline justify-between gap-x-3;
+  }
+
+  .title {
+    @apply text-sm font-medium;
+  }
+
+  .time {
+    @apply text-xs text-muted-foreground tabular-nums;
+  }
+
+  .content {
+    @apply text-sm text-muted-foreground;
+  }
+}

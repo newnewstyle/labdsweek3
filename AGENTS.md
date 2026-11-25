@@ -8,7 +8,9 @@ A public, open-source React design system published to npm as `@scope/ui` (place
 replace in `packages/ui/package.json`, its README, imports in `apps/docs`, and this file once the
 real name is chosen). Components were copied from the app `dsdsmoonew/my-app-2` (shadcn "base-nova"
 style on **Base UI**, styled with **CSS Modules**) and must keep that app's props and appearance.
-`Card`, `ProductCard` and all app pages intentionally stay in the app.
+`ProductCard` and all app pages intentionally stay in the app. `Card` moved into the package on
+25 Nov (it is a generic primitive and `StatCard` builds on it). my-app-2 remains where new
+components are first designed; port them here with the same props and appearance.
 
 Publishing is planned for Week 4; until then only build and `pnpm pack --dry-run`.
 
@@ -16,7 +18,7 @@ Publishing is planned for Week 4; until then only build and `pnpm pack --dry-run
 
 pnpm workspaces + Turborepo · React 19 · TypeScript (strict) · `@base-ui/react` · CSS Modules with
 Tailwind CSS v4 `@apply` · `cn` (npm package: clsx + tailwind-merge replacement) · `lucide-react` ·
-`sonner` · `tw-animate-css` · tsup + PostCSS · Vitest + Testing Library (jsdom) · Next.js 16 docs
+`sonner` · `tw-animate-css` · `react-day-picker` + `date-fns` (Calendar) · `recharts` (Chart) · tsup + PostCSS · Vitest + Testing Library (jsdom) · Next.js 16 docs
 app · Storybook 10 (`@storybook/react-vite`) · ESLint 9 flat config · Changesets.
 
 pnpm is installed globally via `npm i -g pnpm` (this Node version has no corepack); the version is
@@ -27,8 +29,11 @@ pinned in the root `packageManager` field.
 ```
 packages/ui/
   src/index.ts                  # public API: only what is exported here is public
-  src/components/<Name>/        # <Name>.tsx, <Name>.module.css, index.ts (+ tests, README)
-  src/hooks/use-mobile.ts       # internal (used by Sidebar), not exported
+  src/components/<Name>/        # <Name>.tsx, <Name>.module.css, index.ts (+ <Name>.types.ts, tests)
+                                # + usage docs <Name>.spec.ts / <Name>.md (Button, Badge, Dialog, Tabs)
+  src/components/SETUP.md       # one-time consumer setup shown above every usage doc
+  src/lib/component-spec.ts     # ComponentSpec type for <Name>.spec.ts (not exported)
+  src/hooks/use-mobile.ts       # internal (used by Sidebar, ResponsiveDialog), not exported
   src/styles/tokens.css         # design tokens: shipped as the top of dist/styles.css
   src/styles/shadcn-tailwind.css# shadcn custom variants/utilities (copied from the shadcn package)
   src/styles/reference.css      # build-only @reference target for every *.module.css
@@ -38,6 +43,7 @@ apps/docs/                      # Next.js docs/playground; depends on @scope/ui 
 apps/storybook/                 # Storybook for reviewing each component's props and states
   .storybook/                   # main.ts (addons, Tailwind vite plugin), preview.ts, preview-head.html
   src/<Name>.stories.tsx        # one file per component
+  src/lib/usage-doc.ts          # renders <Name>.spec.ts + <Name>.md as the Docs page description
 eslint.config.mjs               # single root ESLint config for all workspaces
 ```
 
@@ -99,12 +105,17 @@ deletes `dist/` first, so a running dev server briefly logs "Can't resolve '@sco
 - **Imports inside the package** are relative (`../Button`); there are no `@/` aliases. Components
   import `cn` from the `cn` npm package, as in the original app.
 - **Base UI API, not Radix.** Use the `render` prop instead of `asChild`; with a non-`<button>`
-  element pass `nativeButton={false}` (the element keeps `role="button"`).
+  element pass `nativeButton={false}` (the element keeps `role="button"`). A Button that navigates
+  also sets `role="link"`.
 - **Dependencies:** `react`, `react-dom`, `next-themes` (used by `Toaster`) are
-  `peerDependencies`. `@base-ui/react`, `cn`, `lucide-react`, `sonner`, `tw-animate-css` are
-  `dependencies`. Tailwind is the consumer's dependency.
+  `peerDependencies`. `@base-ui/react`, `cn`, `lucide-react`, `sonner`, `tw-animate-css`,
+  `react-day-picker`, `date-fns`, `recharts` are `dependencies`. Tailwind is the consumer's
+  dependency. Consumers who compose charts import recharts primitives (`BarChart`, `Bar`…) inside
+  `ChartContainer`, so they add `recharts` themselves (the Storybook app does).
 - **Adding a component:** create `src/components/<Name>/` following the rules above, export it from
-  `src/index.ts`, add it to `src/index.test.ts`, show it in `apps/docs`, add a changeset.
+  `src/index.ts`, add it to `src/index.test.ts`, add a render test, show it in `apps/docs`
+  (`app/page.tsx` is a Server Component: only demos without function props), add a story,
+  add a changeset.
   Removing or renaming a public export is a major bump.
 - **`toast`** is re-exported from `sonner` (`src/components/Sonner/index.ts`) so consumers use the
   same sonner instance as `Toaster` without installing it themselves.
@@ -123,6 +134,15 @@ deletes `dist/` first, so a running dev server briefly logs "Can't resolve '@sco
   (`StateGrid`, `pseudoByAttribute`, `avatarDataUri`, `openOverlayStory`) live in
   `src/story-helpers.tsx`. Multi-part components (Dialog, Select, Sidebar…) use a small
   `Example*` wrapper as the meta `component` so its args map to the parts' props.
+  Stories ported from my-app-2 on 25 Nov (Accordion … Timeline, Card, ButtonGroup) still use that
+  app's simpler style (inferred controls from `args`, few `States` matrices or `play`s); bring
+  them up to these rules when touching them.
+- **Usage docs** (`<Name>.spec.ts` rules typed by `ComponentSpec` + `<Name>.md` manual) live next
+  to the component in the package but are not exported, bundled or published. Storybook reads them
+  from source via the `@ui-docs/*` alias (→ `packages/ui/src/*`, set in `.storybook/main.ts`
+  `resolve.alias` and `tsconfig.json` `paths`) and renders them with `src/lib/usage-doc.ts`, after
+  the shared setup in `packages/ui/src/components/SETUP.md`. Import lines in docs are always
+  `from "@scope/ui"`. Write new ones with the `/usage-doc` skill (`.claude/skills/usage-doc`).
 - **Writing `play` functions against Base UI in a real browser** (all learned the hard way):
   - Open Select/DropdownMenu with the keyboard (`trigger.focus(); userEvent.keyboard("{Enter}")`)
     — user-event's synthetic click opens them unreliably, though a real click works.
@@ -139,7 +159,8 @@ deletes `dist/` first, so a running dev server briefly logs "Can't resolve '@sco
     Storybook canvas.
   - Storybook's `phase === "finished"` does not mean the play passed; check the
     `storyFinished` event's `status`.
-- **Color contrast is a token concern.** `--destructive` (both themes) and light
+- **Color contrast is a token concern.** `--destructive` (both themes; my-app-2's newer
+  `oklch(0.53 0.22 27)` was not taken, it drops to 4.01:1 on the hover tint) and light
   `--muted-foreground` were adjusted from my-app-2's values so destructive text passes WCAG AA on
   its own tint at rest *and* hover (10%/20% light, 20%/30% dark) and muted text passes on `--muted`;
   the reasoning and ratios are in comments in `tokens.css`. When changing a color token, check the

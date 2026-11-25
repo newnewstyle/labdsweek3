@@ -1,0 +1,36 @@
+/*
+ * ToggleGroup: a row (or column) of Toggles. With spacing={0} the items
+ * join into one segmented bar: inner corners square, shared borders.
+ * Item rules use [data-slot] for specificity over Toggle's module.
+ */
+@reference "../../styles/reference.css";
+
+@layer components {
+  .group {
+    @apply flex w-fit flex-row items-center gap-[--spacing(var(--gap))] rounded-lg;
+    @apply data-[size=sm]:rounded-[min(var(--radius-md),10px)];
+    @apply data-[orientation=vertical]:flex-col data-[orientation=vertical]:items-stretch;
+  }
+
+  .item[data-slot="toggle-group-item"] {
+    @apply shrink-0 focus:z-10 focus-visible:z-10;
+  }
+
+  /* ---------- joined bar (spacing 0) ---------- */
+
+  .group[data-spacing="0"] .item[data-slot="toggle-group-item"] {
+    @apply rounded-none px-2 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5;
+  }
+
+  .group[data-spacing="0"][data-orientation="horizontal"]
+    .item[data-slot="toggle-group-item"] {
+    @apply first:rounded-l-lg last:rounded-r-lg;
+    @apply data-[variant=outline]:border-l-0 data-[variant=outline]:first:border-l;
+  }
+
+  .group[data-spacing="0"][data-orientation="vertical"]
+    .item[data-slot="toggle-group-item"] {
+    @apply first:rounded-t-lg last:rounded-b-lg;
+    @apply data-[variant=outline]:border-t-0 data-[variant=outline]:first:border-t;
+  }
+}

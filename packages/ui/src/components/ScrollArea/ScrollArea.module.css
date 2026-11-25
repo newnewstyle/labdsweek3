@@ -1,0 +1,23 @@
+/* ScrollArea: native scrolling with thin themed scrollbars. */
+@reference "../../styles/reference.css";
+
+@layer components {
+  .root {
+    @apply relative;
+  }
+
+  .viewport {
+    @apply size-full rounded-[inherit] transition-[color,box-shadow] outline-none;
+    @apply focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1;
+  }
+
+  .scrollbar {
+    @apply flex touch-none p-px transition-colors select-none;
+    @apply data-[orientation=horizontal]:h-2.5 data-[orientation=horizontal]:flex-col data-[orientation=horizontal]:border-t data-[orientation=horizontal]:border-t-transparent;
+    @apply data-[orientation=vertical]:h-full data-[orientation=vertical]:w-2.5 data-[orientation=vertical]:border-l data-[orientation=vertical]:border-l-transparent;
+  }
+
+  .thumb {
+    @apply relative flex-1 rounded-full bg-border;
+  }
+}

@@ -3,7 +3,10 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { HomeIcon, SettingsIcon, UserIcon } from "lucide-react";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 
+import { usageDoc } from "./lib/usage-doc";
 import { pseudoByAttribute, StateGrid } from "./story-helpers";
+import usage from "@ui-docs/components/Tabs/Tabs.md?raw";
+import { tabsSpec } from "@ui-docs/components/Tabs/Tabs.spec";
 
 const listVariants = ["default", "line"] as const satisfies readonly TabsListVariant[];
 
@@ -40,6 +43,9 @@ function ExampleTabs({ variant, orientation, disableThird }: TabsStoryArgs) {
 const meta = {
   title: "Components/Tabs",
   component: ExampleTabs,
+  parameters: {
+    docs: { description: { component: usageDoc(usage, tabsSpec) } },
+  },
   args: { variant: "default", orientation: "horizontal", disableThird: false },
   argTypes: {
     variant: {

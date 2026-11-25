@@ -59,4 +59,39 @@ describe("Button", () => {
     expect(link).toHaveAttribute("href", "/dashboard");
     expect(link).toHaveAttribute("data-slot", "button");
   });
+
+  it("can be announced as a link with role=\"link\"", () => {
+    render(
+      <Button nativeButton={false} role="link" render={<a href="/dashboard" />}>
+        ไปหน้าภาพรวม
+      </Button>,
+    );
+    expect(screen.getByRole("link", { name: "ไปหน้าภาพรวม" })).toHaveAttribute("href", "/dashboard");
+  });
+
+  it("loading shows a spinner, disables and marks the button busy", async () => {
+    const onClick = vi.fn();
+    render(
+      <Button loading onClick={onClick}>
+        บันทึก
+      </Button>,
+    );
+    const button = screen.getByRole("button", { name: "บันทึก" });
+    expect(button).toBeDisabled();
+    expect(button).toHaveAttribute("aria-busy", "true");
+    expect(button).toHaveAttribute("data-loading", "true");
+    expect(button.querySelector('[data-slot="button-spinner"]')).toBeInTheDocument();
+    await userEvent.click(button);
+    expect(onClick).not.toHaveBeenCalled();
+  });
+
+  it("loading on an icon-only button replaces the icon with the spinner", () => {
+    render(
+      <Button loading size="icon" aria-label="ลบ">
+        <svg data-testid="icon" />
+      </Button>,
+    );
+    expect(screen.queryByTestId("icon")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "ลบ" }).querySelector('[data-slot="button-spinner"]')).toBeInTheDocument();
+  });
 });

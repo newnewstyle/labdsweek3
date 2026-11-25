@@ -1,0 +1,87 @@
+/*
+ * DataTable: filters on top, the table (≥ md) or a card list (< md), then
+ * the page count and pagination.
+ */
+@reference "../../styles/reference.css";
+
+@layer components {
+  .root {
+    @apply flex w-full flex-col gap-3;
+  }
+
+  .filters {
+    @apply max-w-full overflow-x-auto;
+  }
+
+  .empty {
+    @apply rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground;
+  }
+
+  /* ---------- table (tablet and up) ---------- */
+
+  .desktop {
+    @apply hidden md:block;
+  }
+
+  .head[data-align="end"],
+  .cell[data-align="end"] {
+    @apply text-right;
+  }
+
+  .sortButton {
+    @apply -mx-1 inline-flex items-center gap-1 rounded-md px-1 font-medium outline-none hover:text-foreground;
+    @apply focus-visible:ring-3 focus-visible:ring-ring/50 [&_svg]:size-3.5;
+  }
+
+  .head[data-align="end"] .sortButton {
+    @apply flex-row-reverse;
+  }
+
+  .sortIdle {
+    @apply opacity-40;
+  }
+
+  /* ---------- card list (phones) ---------- */
+
+  .mobile {
+    @apply flex flex-col gap-2 md:hidden;
+  }
+
+  .mobileRow {
+    @apply rounded-lg border bg-card p-3 text-sm;
+  }
+
+  .mobileList {
+    @apply flex flex-col gap-1.5;
+  }
+
+  .mobileField {
+    @apply flex items-baseline justify-between gap-3;
+  }
+
+  .mobileField dt {
+    @apply shrink-0 text-muted-foreground;
+  }
+
+  .mobileField dd {
+    @apply min-w-0 text-right;
+  }
+
+  /* ---------- footer ---------- */
+
+  .footer {
+    @apply flex flex-col items-center gap-2 sm:flex-row sm:justify-between;
+  }
+
+  .count {
+    @apply text-sm text-muted-foreground tabular-nums;
+  }
+
+  .pagination[data-slot="pagination"] {
+    @apply mx-0 w-auto;
+  }
+
+  .footer [aria-disabled="true"] {
+    @apply pointer-events-none opacity-50;
+  }
+}

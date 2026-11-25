@@ -39,16 +39,25 @@ export default function Page() {
 }
 ```
 
-To render as a link, use Base UI's `render` prop:
+To render as a link, use Base UI's `render` prop and set `role="link"` so it is announced as one:
 
 ```tsx
-<Button nativeButton={false} render={<a href="/dashboard" />}>
+<Button nativeButton={false} role="link" render={<a href="/dashboard" />}>
   Dashboard
 </Button>
 ```
 
 ## Components
 
-AlertDialog, Avatar, Badge, Button, Checkbox, Dialog, DropdownMenu, Input, Label, Select,
-Separator, Sheet, Sidebar, Skeleton, Toaster (Sonner), Switch, Table, Tabs, Textarea, Tooltip, and
-the `cn` class-name helper.
+Accordion, Alert, AlertDialog, Avatar, Badge, Breadcrumb, Button, ButtonGroup, Calendar, Card,
+Chart, Checkbox, Combobox, DataTable, Dialog, Drawer, DropdownMenu, Empty, Field, FileDropzone,
+Input, InputGroup, Label, Money (+ `formatMoney`), Pagination, Popover, Progress, RadioGroup,
+ResponsiveDialog, ScrollArea, Select, Separator, Sheet, Sidebar, Skeleton, Spinner, StatCard,
+StatusBadge, Switch, Table, Tabs, Textarea, Timeline, Toaster (Sonner, + `toast`), Toggle,
+ToggleGroup, Tooltip, and the `cn` class-name helper.
+
+**Charts:** `ChartContainer` wraps [recharts](https://recharts.org) primitives that you compose
+yourself, so add `recharts` to your app to build charts. Use the `--chart-1` … `--chart-5` tokens
+in that order for series colours.
+
+**Calendar** shows Thai month names and Buddhist-era years by default.

@@ -3,13 +3,17 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ArrowRightIcon, PencilIcon, PlusIcon } from "lucide-react";
 import { expect, fn, userEvent, within } from "storybook/test";
 
+import { usageDoc } from "./lib/usage-doc";
+import usage from "@ui-docs/components/Button/Button.md?raw";
+import { buttonSpec } from "@ui-docs/components/Button/Button.spec";
+
 // Prop values come from the package's exported types, so a renamed/removed variant breaks typecheck.
 const variants = [
   "default",
   "outline",
-  "secondary",
   "ghost",
   "destructive",
+  "destructive-solid",
   "link",
 ] as const satisfies readonly ButtonVariant[];
 const textSizes = ["xs", "sm", "default", "lg"] as const satisfies readonly ButtonSize[];
@@ -18,11 +22,15 @@ const iconSizes = ["icon-xs", "icon-sm", "icon", "icon-lg"] as const satisfies r
 const meta = {
   title: "Components/Button",
   component: Button,
+  parameters: {
+    docs: { description: { component: usageDoc(usage, buttonSpec) } },
+  },
   args: {
     children: "บันทึก",
     variant: "default",
     size: "default",
     disabled: false,
+    loading: false,
     onClick: fn(),
   },
   argTypes: {
@@ -39,6 +47,12 @@ const meta = {
       table: { defaultValue: { summary: "default" } },
     },
     disabled: { control: "boolean" },
+    loading: {
+      control: "boolean",
+      description:
+        "Shows a spinner, disables the button and sets `aria-busy` / `data-loading`. Stays at full opacity.",
+      table: { defaultValue: { summary: "false" } },
+    },
     "aria-invalid": {
       control: "boolean",
       description: "Error state (destructive border and ring).",
@@ -197,15 +211,19 @@ export const WithIcon: Story = {
   ),
 };
 
-/** Base UI `render` prop instead of `asChild`. The element keeps `role="button"`. */
+/**
+ * Base UI `render` prop instead of `asChild`. A button that navigates sets `role="link"`
+ * (Base UI would otherwise keep `role="button"`), so screen readers announce a link.
+ */
 export const AsLink: Story = {
   args: {
     nativeButton: false,
+    role: "link",
     render: <a href="#dashboard" />,
     children: "เข้าสู่ระบบจัดการ",
   },
   play: async ({ canvasElement }) => {
-    const link = within(canvasElement).getByRole("button", { name: "เข้าสู่ระบบจัดการ" });
+    const link = within(canvasElement).getByRole("link", { name: "เข้าสู่ระบบจัดการ" });
     await expect(link.tagName).toBe("A");
     await expect(link).toHaveAttribute("href", "#dashboard");
   },
@@ -222,4 +240,29 @@ export const ClickInteraction: Story = {
 /** `className` utilities win over the module styles (they sit in a later CSS layer). */
 export const ClassNameOverride: Story = {
   args: { className: "w-64 rounded-full" },
+};
+
+/** `loading`: spinner before the label (replaces the icon on icon-only sizes), not clickable. */
+export const Loading: Story = {
+  args: { loading: true },
+  render: (args) => (
+    <div className="flex flex-wrap items-center gap-3">
+      {variants.map((variant) => (
+        <Button key={variant} {...args} variant={variant}>
+          {variant}
+        </Button>
+      ))}
+      <Button {...args} size="icon" aria-label="กำลังบันทึก">
+        <PencilIcon />
+      </Button>
+    </div>
+  ),
+  play: async ({ args, canvasElement }) => {
+    const button = within(canvasElement).getByRole("button", { name: "default" });
+    await expect(button).toBeDisabled();
+    await expect(button).toHaveAttribute("aria-busy", "true");
+    await expect(button).toHaveAttribute("data-loading");
+    await userEvent.setup({ pointerEventsCheck: 0 }).click(button);
+    await expect(args.onClick).not.toHaveBeenCalled();
+  },
 };

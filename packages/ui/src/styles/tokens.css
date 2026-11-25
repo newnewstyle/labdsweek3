@@ -33,14 +33,32 @@
   /* Darkened from my-app-2 (oklch(0.577 0.245 27.325)) for WCAG AA: destructive text on its own
      10% / 20% (hover) tint is now 5.73:1 / 4.73:1 (was 3.97 / 3.31). */
   --destructive: oklch(0.49 0.2 27.325);
+  /* Status / utility tokens added in my-app-2 after the first copy. my-app-2 also moved
+     --destructive to oklch(0.53 0.22 27); that is NOT taken here because destructive text on its
+     20% hover tint drops to 4.01:1 (fails AA). The value above keeps 4.72:1 and gives
+     --destructive-foreground on solid destructive (Button destructive-solid) 6.66:1. */
+  --destructive-foreground: oklch(0.985 0 0);
+  /* success / warning text on their 10% tint: 5.11:1 / 5.33:1. On the 20% hover tint (only link
+     badges hover) success is 4.39:1, warning 4.58:1. */
+  --success: oklch(0.49 0.13 150);
+  --warning: oklch(0.5 0.11 70);
+  /* Link text (Button variant="link"): 5.05:1 on the background. */
+  --link: oklch(0.555 0.163 48.998);
+  --overlay: oklch(0 0 0 / 10%);
   --border: oklch(0.923 0.003 48.717);
   --input: oklch(0.923 0.003 48.717);
   --ring: oklch(0.709 0.01 56.259);
-  --chart-1: oklch(0.869 0.005 56.366);
-  --chart-2: oklch(0.553 0.013 58.071);
-  --chart-3: oklch(0.444 0.011 73.639);
-  --chart-4: oklch(0.374 0.01 67.558);
-  --chart-5: oklch(0.268 0.007 34.298);
+  /*
+   * Chart series, in this fixed order (never cycled): blue, orange, aqua,
+   * yellow, magenta. Validated as a set for colour-blind separation on the
+   * card surface. 3–5 are below 3:1 here, so charts with 3+ series need
+   * direct labels or a table view.
+   */
+  --chart-1: #2a78d6;
+  --chart-2: #eb6834;
+  --chart-3: #1baf7a;
+  --chart-4: #eda100;
+  --chart-5: #e87ba4;
   --radius: 0.625rem;
   --sidebar: oklch(0.985 0.001 106.423);
   --sidebar-foreground: oklch(0.147 0.004 49.25);
@@ -73,14 +91,24 @@
   /* Lightened from my-app-2 (oklch(0.704 0.191 22.216)) for WCAG AA: on its 20% / 30% (hover)
      tint over the dark background it is now 6.06:1 / 4.81:1 (hover was 4.33). */
   --destructive: oklch(0.76 0.16 22.216);
+  /* my-app-2 uses oklch(0.74 0.17 22) here; the lab value above is kept (both pass AA; this one
+     is 4.85:1 on the 30% hover tint vs 4.67:1). Dark text on solid destructive: 7.53:1. */
+  --destructive-foreground: oklch(0.205 0 0);
+  /* success / warning on their 20% / 30% tints: ≥ 5.3:1. */
+  --success: oklch(0.76 0.15 150);
+  --warning: oklch(0.8 0.14 85);
+  /* 7.07:1 on the background. */
+  --link: oklch(0.7 0.15 55);
+  --overlay: oklch(0 0 0 / 50%);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.553 0.013 58.071);
-  --chart-1: oklch(0.869 0.005 56.366);
-  --chart-2: oklch(0.553 0.013 58.071);
-  --chart-3: oklch(0.444 0.011 73.639);
-  --chart-4: oklch(0.374 0.01 67.558);
-  --chart-5: oklch(0.268 0.007 34.298);
+  /* same hues stepped for the dark card; all ≥ 3:1 */
+  --chart-1: #3987e5;
+  --chart-2: #d95926;
+  --chart-3: #199e70;
+  --chart-4: #c98500;
+  --chart-5: #d55181;
   --sidebar: oklch(0.216 0.006 56.043);
   --sidebar-foreground: oklch(0.985 0.001 106.423);
   --sidebar-primary: var(--primary);
@@ -115,6 +143,11 @@
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-link: var(--link);
+  --color-overlay: var(--overlay);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);

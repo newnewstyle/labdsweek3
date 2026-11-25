@@ -1,0 +1,156 @@
+/*
+ * Drawer (Base UI): a panel that slides in from an edge and can be swiped
+ * away. Position, size and the swipe / nested-stack motion are driven by
+ * CSS variables Base UI sets (--drawer-*, --nested-drawers); the popup's
+ * data-swipe-direction / data-swipe-axis pick the edge.
+ */
+@reference "../../styles/reference.css";
+
+@layer components {
+  .overlay {
+    @apply fixed inset-0 z-50 min-h-dvh bg-overlay select-none supports-backdrop-filter:backdrop-blur-xs;
+    @apply opacity-[max(var(--drawer-overlay-min-opacity,0),calc(1-var(--drawer-swipe-progress)))] transition-opacity duration-450 ease-[cubic-bezier(0.32,0.72,0,1)];
+    @apply data-starting-style:opacity-0 data-swiping:duration-0;
+    @apply data-ending-style:pointer-events-none data-ending-style:opacity-0 data-ending-style:duration-[calc(var(--drawer-swipe-strength)*400ms)];
+    @apply data-snap-points:[--drawer-overlay-min-opacity:0.5];
+    /* iOS: fixed backdrops jump with the toolbar */
+    @apply supports-[-webkit-touch-callout:none]:absolute;
+  }
+
+  .viewport {
+    @apply pointer-events-none fixed inset-0 z-50 select-none data-[modal=true]:pointer-events-auto;
+  }
+
+  /* ---------- popup ---------- */
+
+  .popup {
+    @apply pointer-events-auto fixed z-50 m-(--drawer-inset,0px) flex h-(--drawer-content-height) max-h-(--drawer-content-max-height,none) min-h-0 w-(--drawer-content-width,auto) flex-col bg-popover text-sm text-popover-foreground outline-none select-none;
+    @apply transform-[translate3d(var(--translate-x,0px),var(--translate-y,0px),0)_scale(var(--stack-scale))] transition-[transform,height,opacity,filter] duration-450 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform [interpolate-size:allow-keywords];
+    /* rounded edge + border on the side facing the page */
+    @apply data-[swipe-direction=down]:rounded-t-xl data-[swipe-direction=down]:border-t;
+    @apply data-[swipe-direction=up]:rounded-b-xl data-[swipe-direction=up]:border-b;
+    @apply data-[swipe-direction=left]:rounded-r-xl data-[swipe-direction=left]:border-r;
+    @apply data-[swipe-direction=right]:rounded-l-xl data-[swipe-direction=right]:border-l;
+    /* a drawer opened on top of this one dims it */
+    @apply data-nested-drawer-open:overflow-hidden data-nested-drawer-open:brightness-95;
+    /* bleed: surface colour continues past the edge while over-swiping */
+    @apply after:pointer-events-none after:absolute after:bg-(--drawer-bleed-background,var(--color-popover));
+    @apply data-[swipe-axis=x]:after:inset-y-0 data-[swipe-axis=x]:after:w-(--bleed) data-[swipe-axis=y]:after:inset-x-0 data-[swipe-axis=y]:after:h-(--bleed);
+    @apply data-[swipe-direction=down]:after:top-full data-[swipe-direction=left]:after:right-full data-[swipe-direction=right]:after:left-full data-[swipe-direction=up]:after:bottom-full;
+    /* sizing: bottom sheets stop 6rem short of the top; side panels 75% / 24rem */
+    @apply [--drawer-content-height:var(--drawer-height,auto)];
+    @apply data-[swipe-axis=y]:[--drawer-content-max-height:calc(100dvh-6rem)] data-[swipe-axis=y]:data-snap-points:[--drawer-content-height:100dvh];
+    @apply data-[swipe-axis=x]:[--drawer-content-width:75%] data-[swipe-axis=x]:sm:[--drawer-content-width:24rem];
+    /* nested stack */
+    @apply [--bleed:3rem] [--peek:1rem] [--stack-step:0.05];
+    @apply [--stack-height:var(--drawer-frontmost-height,var(--drawer-height,0px))];
+    @apply [--stack-progress:clamp(0,var(--drawer-swipe-progress),1)];
+    @apply [--stack-peek-offset:max(0px,calc((var(--nested-drawers)-var(--stack-progress))*var(--peek)))];
+    @apply [--stack-scale-base:max(0,calc(1-(var(--nested-drawers)*var(--stack-step))))];
+    @apply [--stack-scale:clamp(0,calc(var(--stack-scale-base)+(var(--stack-step)*var(--stack-progress))),1)];
+    @apply [--stack-shrink:calc(1-var(--stack-scale))];
+    /* open / close */
+    @apply data-ending-style:transform-(--closed-transform) data-ending-style:opacity-[0.9999] data-starting-style:transform-(--closed-transform);
+    @apply data-ending-style:duration-[calc(var(--drawer-swipe-strength)*400ms)] data-nested-drawer-swiping:duration-0 data-swiping:duration-0;
+    @apply data-ending-style:data-nested-drawer-swiping:duration-[calc(var(--drawer-swipe-strength)*400ms)] data-ending-style:data-swiping:duration-[calc(var(--drawer-swipe-strength)*400ms)];
+    /* axis */
+    @apply data-[swipe-axis=y]:inset-x-0 data-[swipe-axis=y]:data-nested-drawer-open:h-(--stack-height);
+    @apply data-[swipe-axis=x]:inset-y-0 data-[swipe-axis=x]:flex-row;
+  }
+
+  .popup[data-swipe-direction="down"] {
+    @apply bottom-0 origin-bottom;
+    @apply [--closed-transform:translate3d(0,calc(100%+var(--drawer-inset,0px)+2px),0)];
+    @apply [--translate-y:calc(var(--drawer-snap-point-offset,0px)+var(--drawer-swipe-movement-y)-var(--stack-peek-offset)-(var(--stack-shrink)*var(--stack-height)))];
+  }
+
+  .popup[data-swipe-direction="up"] {
+    @apply top-0 origin-top;
+    @apply [--closed-transform:translate3d(0,calc(-100%-var(--drawer-inset,0px)-2px),0)];
+    @apply [--translate-y:calc(var(--drawer-snap-point-offset,0px)+var(--drawer-swipe-movement-y)+var(--stack-peek-offset)+(var(--stack-shrink)*var(--stack-height)))];
+  }
+
+  .popup[data-swipe-direction="left"] {
+    @apply left-0 origin-left;
+    @apply [--closed-transform:translate3d(calc(-100%-var(--drawer-inset,0px)-2px),0,0)];
+    @apply [--translate-x:calc(var(--drawer-swipe-movement-x)+var(--stack-peek-offset)+(var(--stack-shrink)*100%))];
+  }
+
+  .popup[data-swipe-direction="right"] {
+    @apply right-0 origin-right;
+    @apply [--closed-transform:translate3d(calc(100%+var(--drawer-inset,0px)+2px),0,0)];
+    @apply [--translate-x:calc(var(--drawer-swipe-movement-x)-var(--stack-peek-offset)-(var(--stack-shrink)*100%))];
+  }
+
+  /* ---------- swipe handle ---------- */
+
+  .handle {
+    @apply relative z-10 flex shrink-0 cursor-grab transition-opacity duration-200 active:cursor-grabbing;
+    @apply after:block after:shrink-0 after:rounded-full after:bg-muted;
+  }
+
+  .popup[data-swipe-axis="y"] .handle {
+    @apply h-3 w-full justify-center after:h-1 after:w-24;
+  }
+
+  .popup[data-swipe-axis="x"] .handle {
+    @apply h-full w-3 items-center after:h-24 after:w-1;
+  }
+
+  .popup[data-swipe-direction="down"] .handle {
+    @apply items-end;
+  }
+
+  .popup[data-swipe-direction="up"] .handle {
+    @apply order-last items-start;
+  }
+
+  .popup[data-swipe-direction="left"] .handle {
+    @apply order-last justify-start;
+  }
+
+  .popup[data-swipe-direction="right"] .handle {
+    @apply justify-end;
+  }
+
+  /* ---------- content ---------- */
+
+  .content {
+    @apply flex min-h-0 flex-1 flex-col overflow-hidden overscroll-contain rounded-[inherit] transition-opacity duration-300 ease-[cubic-bezier(0.45,1.005,0,1.005)] select-text;
+  }
+
+  /* hide this drawer's content while a nested drawer covers it */
+  .popup[data-nested-drawer-open] .content,
+  .popup[data-nested-drawer-open] .handle {
+    @apply opacity-0;
+  }
+
+  .popup[data-nested-drawer-swiping] .content,
+  .popup[data-nested-drawer-swiping] .handle {
+    @apply opacity-100;
+  }
+
+  .popup[data-swiping] .content {
+    @apply select-none;
+  }
+
+  .header {
+    @apply flex shrink-0 flex-col gap-0.5 p-4 pb-0 md:text-left;
+  }
+
+  .popup[data-swipe-axis="y"] .header {
+    @apply text-center md:text-left;
+  }
+
+  .footer {
+    @apply mt-auto flex shrink-0 flex-col gap-2 p-4 pt-0;
+  }
+
+  .title {
+    @apply font-heading text-base font-semibold text-foreground;
+  }
+
+  .description {
+    @apply text-sm text-balance text-muted-foreground;
+  }
+}

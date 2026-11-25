@@ -1,0 +1,8 @@
+/* Spinner. Size with a size-* utility in className (default 16px). */
+@reference "../../styles/reference.css";
+
+@layer components {
+  .spinner {
+    @apply size-4 shrink-0 animate-spin;
+  }
+}
