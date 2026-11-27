@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
+import { expect, userEvent, waitFor, within } from "storybook/test"
 
 import {
   Button,
@@ -10,9 +11,12 @@ import {
   PopoverTrigger,
 } from "@newnewstyle/ui"
 
+const sides = ["top", "bottom", "left", "right"] as const
+const aligns = ["start", "center", "end"] as const
+
 type Args = {
-  side: "top" | "bottom" | "left" | "right"
-  align: "start" | "center" | "end"
+  side: (typeof sides)[number]
+  align: (typeof aligns)[number]
 }
 
 const meta = {
@@ -22,13 +26,15 @@ const meta = {
   argTypes: {
     side: {
       control: "inline-radio",
-      options: ["top", "bottom", "left", "right"],
-      description: "ด้านที่กล่องเปิดออกจากปุ่ม",
+      options: sides,
+      description: "ด้านที่กล่องเปิดออกจากปุ่ม (`PopoverContent side`)",
+      table: { defaultValue: { summary: "bottom" } },
     },
     align: {
       control: "inline-radio",
-      options: ["start", "center", "end"],
-      description: "แนวการจัดตำแหน่งเทียบกับปุ่ม",
+      options: aligns,
+      description: "แนวการจัดตำแหน่งเทียบกับปุ่ม (`PopoverContent align`)",
+      table: { defaultValue: { summary: "center" } },
     },
   },
   render: ({ side, align }) => (
@@ -56,4 +62,18 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /** Click the button to open; click outside or press Esc to close. */
-export const Playground: Story = {}
+export const Playground: Story = {
+  play: async ({ canvasElement }) => {
+    const trigger = within(canvasElement).getByRole("button", {
+      name: "รายละเอียดค่าเช่า",
+    })
+    await userEvent.click(trigger)
+    await expect(trigger).toHaveAttribute("aria-expanded", "true")
+    const dialog = await within(document.body).findByRole("dialog")
+    await expect(dialog).toHaveAccessibleName("ค่าเช่าเดือนพฤศจิกายน")
+    await userEvent.keyboard("{Escape}")
+    await waitFor(() =>
+      expect(trigger).toHaveAttribute("aria-expanded", "false")
+    )
+  },
+}

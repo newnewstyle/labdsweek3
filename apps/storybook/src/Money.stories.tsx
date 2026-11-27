@@ -4,6 +4,8 @@ import { Money, type MoneyDisplay } from "@newnewstyle/ui"
 
 type Args = { value: number; display: MoneyDisplay; fractionDigits?: number }
 
+const displays = ["symbol", "word", "none"] as const satisfies readonly MoneyDisplay[]
+
 const meta = {
   title: "Components/Money",
   tags: ["autodocs"],
@@ -12,7 +14,7 @@ const meta = {
     value: { control: "number", description: "จำนวนเงิน (บาท)" },
     display: {
       control: "inline-radio",
-      options: ["symbol", "word", "none"],
+      options: displays,
       description: "฿8,500 / 8,500 บาท / ตัวเลขอย่างเดียว",
     },
     fractionDigits: {

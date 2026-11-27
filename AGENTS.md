@@ -30,7 +30,8 @@ pinned in the root `packageManager` field.
 packages/ui/
   src/index.ts                  # public API: only what is exported here is public
   src/components/<Name>/        # <Name>.tsx, <Name>.module.css, index.ts (+ <Name>.types.ts, tests)
-                                # + usage docs <Name>.spec.ts / <Name>.md (Button, Badge, Dialog, Tabs)
+                                # + usage docs <Name>.spec.ts / <Name>.md (Badge, Button, Dialog,
+                                #   Field, Input, StatusBadge, Tabs)
   src/components/SETUP.md       # one-time consumer setup shown above every usage doc
   src/lib/component-spec.ts     # ComponentSpec type for <Name>.spec.ts (not exported)
   src/hooks/use-mobile.ts       # internal (used by Sidebar, ResponsiveDialog), not exported
@@ -93,6 +94,10 @@ deletes `dist/` first, so a running dev server briefly logs "Can't resolve '@new
 - **Tokens.** Colors/radius/fonts are CSS variables in `src/styles/tokens.css` (`:root`,
   `[data-theme="dark"]`, mapped in `@theme inline`). Adding a token means editing all three places.
   Use semantic utilities (`bg-primary`), never hex values or palette classes.
+  Radius: controls at the default 32px height (Input, Select, Button `default`) use `rounded-lg`
+  (`--radius`, 10px); shorter controls (`xs`/`sm` sizes) use `--radius-md` (8px); overlays such as
+  Dialog use `rounded-xl` (14px). Usage docs write a radius as "10px (`--radius`)": the px value
+  with its token, never px alone.
 - **Dark mode is `data-theme="dark"`** on an ancestor, not a `.dark` class: CSS Modules rename
   class selectors, which would break `dark:` inside `@apply`.
 - **Fonts.** The package cannot load fonts. Tokens read `--font-plex-thai` / `--font-geist-mono`
@@ -134,9 +139,9 @@ deletes `dist/` first, so a running dev server briefly logs "Can't resolve '@new
   (`StateGrid`, `pseudoByAttribute`, `avatarDataUri`, `openOverlayStory`) live in
   `src/story-helpers.tsx`. Multi-part components (Dialog, Select, Sidebar…) use a small
   `Example*` wrapper as the meta `component` so its args map to the parts' props.
-  Stories ported from my-app-2 on 25 Nov (Accordion … Timeline, Card, ButtonGroup) still use that
-  app's simpler style (inferred controls from `args`, few `States` matrices or `play`s); bring
-  them up to these rules when touching them.
+  Stories without a `States` matrix on purpose: Card, StatCard, Empty, Timeline, Chart (nothing
+  interactive), and ButtonGroup, Calendar, Popover, Drawer (their interactive parts are Button,
+  whose States story covers them). Add one if such a component gains its own interactive styling.
 - **Usage docs** (`<Name>.spec.ts` rules typed by `ComponentSpec` + `<Name>.md` manual) live next
   to the component in the package but are not exported, bundled or published. Storybook reads them
   from source via the `@ui-docs/*` alias (→ `packages/ui/src/*`, set in `.storybook/main.ts`
@@ -159,6 +164,12 @@ deletes `dist/` first, so a running dev server briefly logs "Can't resolve '@new
     Storybook canvas.
   - Storybook's `phase === "finished"` does not mean the play passed; check the
     `storyFinished` event's `status`.
+  - The preview has no global `<Toaster />`: a story that asserts a toast renders its own.
+  - Below 768px DataTable shows cards instead of the table and ResponsiveDialog renders a
+    Drawer; plays check `matchMedia("(min-width: 768px)")` or query both forms.
+  - Combobox does not re-filter on user-event typing (real typing does). Pick with the keyboard
+    (`{ArrowDown}` opens with the first option highlighted, `{Enter}` picks it), or set the value
+    with an `InputEvent` carrying `inputType` (`typeLikeBrowser` in `Combobox.stories.tsx`).
 - **Color contrast is a token concern.** `--destructive` (both themes; my-app-2's newer
   `oklch(0.53 0.22 27)` was not taken, it drops to 4.01:1 on the hover tint) and light
   `--muted-foreground` were adjusted from my-app-2's values so destructive text passes WCAG AA on
@@ -167,7 +178,8 @@ deletes `dist/` first, so a running dev server briefly logs "Can't resolve '@new
   worst state (hover tints), not just rest — axe in Storybook only tests the light theme by default
   (open a story with `&globals=theme:dark` to test dark). Dark `--primary` is a lighter orange with
   a **dark** `--primary-foreground` (my-app-2 had dark orange + white text, which left the `link`
-  variant at 2.79:1); keep text-on-primary ≥ 4.5:1 on the `primary/80` hover too, and remember the
+  variant at 2.79:1); keep text-on-primary ≥ 4.5:1 on hover too (Button/Badge `default` hover mixes in 10%
+  `--foreground` instead of my-app-2's `primary/80`, which measured 3.48:1 in light), and remember the
   Switch thumb uses `--primary-foreground` in dark mode. Remaining third-party a11y findings: Base UI's focus guards trigger axe `aria-hidden-focus` on an
   open Select/Menu, the Select listbox has no accessible name, and sonner's `richColors` palette
   fails contrast.

@@ -3,10 +3,16 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, within } from "storybook/test";
 
 import { pseudoByAttribute, StateGrid } from "./story-helpers";
+import { usageDoc } from "./lib/usage-doc";
+import usage from "@ui-docs/components/Input/Input.md?raw";
+import { inputSpec } from "@ui-docs/components/Input/Input.spec";
 
 const meta = {
   title: "Components/Input",
   component: Input,
+  parameters: {
+    docs: { description: { component: usageDoc(usage, inputSpec) } },
+  },
   args: {
     placeholder: "name@example.com",
     type: "email",

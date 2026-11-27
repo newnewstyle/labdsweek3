@@ -1,29 +1,48 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
+import { expect, within } from "storybook/test"
 
 import { STATUS, StatusBadge, type StatusKey } from "@newnewstyle/ui"
 
+import { usageDoc } from "./lib/usage-doc"
+import usage from "@ui-docs/components/StatusBadge/StatusBadge.md?raw"
+import { statusBadgeSpec } from "@ui-docs/components/StatusBadge/StatusBadge.spec"
+
 const keys = Object.keys(STATUS) as StatusKey[]
 
-type Args = { status: StatusKey }
+type Args = { status: StatusKey; label?: string }
 
 const meta = {
   title: "Components/StatusBadge",
   tags: ["autodocs"],
+  parameters: {
+    docs: { description: { component: usageDoc(usage, statusBadgeSpec) } },
+  },
   args: { status: "overdue" },
   argTypes: {
     status: {
       control: "select",
       options: keys,
-      description: "สถานะ: สี ไอคอน และข้อความมาจากตารางกลาง",
+      description: "สถานะ: สี ไอคอน และข้อความมาจากตารางกลาง `STATUS`",
+    },
+    label: {
+      control: "text",
+      description: "แทนข้อความเริ่มต้น เช่น \"ค้างชำระ 12 วัน\" (สีและไอคอนคงเดิม)",
     },
   },
-  render: ({ status }) => <StatusBadge status={status} />,
+  render: ({ status, label }) => <StatusBadge status={status} label={label || undefined} />,
 } satisfies Meta<Args>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Playground: Story = {}
+export const Playground: Story = {
+  play: async ({ args, canvasElement }) => {
+    const badge = canvasElement.querySelector('[data-slot="badge"]')
+    await expect(badge).toHaveAttribute("data-status", args.status)
+    await expect(badge).toHaveAttribute("data-variant", STATUS[args.status].variant)
+    await expect(badge).toHaveTextContent(STATUS[args.status].label)
+  },
+}
 
 /** Every status in the app, grouped by what it describes. */
 export const AllStatuses: Story = {
@@ -63,6 +82,15 @@ export const AllStatuses: Story = {
  * jobs. Colour = step; urgency is its own badge.
  */
 export const RepairWithUrgency: Story = {
+  play: async ({ canvasElement }) => {
+    // Decided mapping: pending = warning, in progress = outline, done = success,
+    // urgent = its own red badge.
+    const variantOf = (label: string) =>
+      within(canvasElement).getAllByText(label)[0]!.getAttribute("data-variant")
+    await expect(variantOf("ด่วน")).toBe("destructive")
+    await expect(variantOf("รอซ่อม")).toBe("warning")
+    await expect(variantOf("กำลังซ่อม")).toBe("outline")
+  },
   render: () => (
     <ul className="flex max-w-md flex-col gap-2 text-sm">
       <li className="flex items-center justify-between gap-3">
@@ -86,5 +114,9 @@ export const RepairWithUrgency: Story = {
 
 /** `label` adds detail while keeping the status's colour and icon. */
 export const CustomLabel: Story = {
-  render: () => <StatusBadge status="overdue" label="ค้างชำระ 12 วัน" />,
+  args: { status: "overdue", label: "ค้างชำระ 12 วัน" },
+  play: async ({ canvasElement }) => {
+    const badge = within(canvasElement).getByText("ค้างชำระ 12 วัน")
+    await expect(badge).toHaveAttribute("data-variant", "destructive")
+  },
 }

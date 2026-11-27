@@ -5,25 +5,39 @@ import {
   ChevronRightIcon,
   DownloadIcon,
 } from "lucide-react"
+import { expect, within } from "storybook/test"
 
 import {
   Button,
   ButtonGroup,
+  type ButtonGroupOrientation,
   ButtonGroupSeparator,
   ButtonGroupText,
   Input,
 } from "@newnewstyle/ui"
 
+const orientations = [
+  "horizontal",
+  "vertical",
+] as const satisfies readonly ButtonGroupOrientation[]
+
 const meta = {
   title: "Components/ButtonGroup",
   component: ButtonGroup,
   tags: ["autodocs"],
-  args: { orientation: "horizontal" },
+  args: { orientation: "horizontal", "aria-label": "ช่วงเวลา" },
   argTypes: {
     orientation: {
       control: "inline-radio",
-      options: ["horizontal", "vertical"],
+      options: orientations,
+      description: "เรียงแนวนอน หรือแนวตั้ง Rendered as `data-orientation`.",
+      table: { defaultValue: { summary: "horizontal" } },
     },
+    "aria-label": {
+      control: "text",
+      description: "ชื่อกลุ่ม (`role=\"group\"`) สำหรับ screen reader",
+    },
+    className: { control: "text" },
   },
   render: (args) => (
     <ButtonGroup {...args}>
@@ -38,7 +52,13 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /** Try orientation with the controls panel. */
-export const Playground: Story = {}
+export const Playground: Story = {
+  play: async ({ args, canvasElement }) => {
+    const group = within(canvasElement).getByRole("group", { name: "ช่วงเวลา" })
+    await expect(group).toHaveAttribute("data-orientation", args.orientation)
+    await expect(within(group).getAllByRole("button")).toHaveLength(3)
+  },
+}
 
 export const Vertical: Story = {
   args: { orientation: "vertical" },

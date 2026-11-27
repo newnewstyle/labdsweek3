@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
+import { expect, waitFor } from "storybook/test"
 
 import { ScrollArea, Separator } from "@newnewstyle/ui"
 
@@ -6,6 +7,19 @@ const meta = {
   title: "Components/ScrollArea",
   component: ScrollArea,
   tags: ["autodocs"],
+  argTypes: {
+    scrollbars: {
+      control: "inline-radio",
+      options: ["vertical", "horizontal", "both"],
+      description: "แถบเลื่อนที่แสดง",
+      table: { defaultValue: { summary: "vertical" } },
+    },
+    className: {
+      control: "text",
+      description: "กำหนดความสูง/กว้างของกรอบ เช่น `h-64`",
+    },
+    children: { control: false },
+  },
 } satisfies Meta<typeof ScrollArea>
 
 export default meta
@@ -13,6 +27,14 @@ type Story = StoryObj<typeof meta>
 
 /** A fixed-height list that scrolls inside the page. */
 export const Vertical: Story = {
+  play: async ({ canvasElement }) => {
+    const viewport = canvasElement.querySelector<HTMLElement>(
+      '[data-slot="scroll-area-viewport"]'
+    )!
+    await expect(viewport.scrollHeight).toBeGreaterThan(viewport.clientHeight)
+    viewport.scrollTop = 200
+    await waitFor(() => expect(viewport.scrollTop).toBeGreaterThan(0))
+  },
   render: () => (
     <ScrollArea className="h-64 w-56 rounded-lg border">
       <div className="p-3">

@@ -19,8 +19,11 @@
 
   /* ---------- variants ---------- */
 
+  /* Hover mixes in 10% --foreground instead of fading to primary/80: darker in light mode,
+     lighter in dark mode, so text stays ≥ 4.5:1 (light 5.76, dark 7.84; primary/80 on white
+     measured 3.48:1, the value my-app-2 still has). */
   .button[data-variant="default"] {
-    @apply bg-primary text-primary-foreground hover:bg-primary/80;
+    @apply bg-primary text-primary-foreground hover:bg-[color-mix(in_oklch,var(--primary),var(--foreground)_10%)];
   }
 
   .button[data-variant="outline"] {

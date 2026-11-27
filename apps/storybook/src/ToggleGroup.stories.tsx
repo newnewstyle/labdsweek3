@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { LayoutGridIcon, ListIcon } from "lucide-react"
+import { expect, userEvent, within } from "storybook/test"
 
 import {
   ToggleGroup,
@@ -8,11 +9,18 @@ import {
   type ToggleVariant,
 } from "@newnewstyle/ui"
 
+import { pseudoByAttribute, StateGrid } from "./story-helpers"
+
+const variants = ["default", "outline"] as const satisfies readonly ToggleVariant[]
+const sizes = ["sm", "default", "lg"] as const satisfies readonly ToggleSize[]
+const orientations = ["horizontal", "vertical"] as const
+
 type Args = {
   variant: ToggleVariant
   size: ToggleSize
   spacing: number
-  orientation: "horizontal" | "vertical"
+  orientation: (typeof orientations)[number]
+  multiple: boolean
 }
 
 const meta = {
@@ -23,16 +31,17 @@ const meta = {
     size: "sm",
     spacing: 0,
     orientation: "horizontal",
+    multiple: false,
   },
   argTypes: {
     variant: {
       control: "inline-radio",
-      options: ["default", "outline"],
-      description: "ไม่มีขอบ หรือมีขอบ",
+      options: variants,
+      description: "ไม่มีขอบ หรือมีขอบ (ส่งต่อให้ทุกปุ่มในกลุ่ม)",
     },
     size: {
       control: "inline-radio",
-      options: ["sm", "default", "lg"],
+      options: sizes,
       description: "ขนาดของทุกปุ่มในกลุ่ม",
     },
     spacing: {
@@ -41,8 +50,12 @@ const meta = {
     },
     orientation: {
       control: "inline-radio",
-      options: ["horizontal", "vertical"],
+      options: orientations,
       description: "เรียงแนวนอน หรือแนวตั้ง",
+    },
+    multiple: {
+      control: "boolean",
+      description: "เลือกได้หลายปุ่ม (ปกติเลือกได้ปุ่มเดียว)",
     },
   },
   render: (args) => (
@@ -58,10 +71,39 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /** Table filter: pick one. Arrow keys move between options. */
-export const Playground: Story = {}
+export const Playground: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const all = canvas.getByRole("button", { name: "ทั้งหมด" })
+    const overdue = canvas.getByRole("button", { name: "ค้างชำระ" })
+    await expect(all).toHaveAttribute("aria-pressed", "true")
+    await userEvent.click(overdue)
+    // Single selection: picking one releases the other.
+    await expect(overdue).toHaveAttribute("aria-pressed", "true")
+    await expect(all).toHaveAttribute("aria-pressed", "false")
+  },
+}
+
+/** `multiple`: several filters can be on at once. */
+export const Multiple: Story = {
+  args: { multiple: true },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole("button", { name: "ค้างชำระ" }))
+    await expect(canvas.getByRole("button", { name: "ทั้งหมด" })).toHaveAttribute(
+      "aria-pressed",
+      "true"
+    )
+    await expect(
+      canvas.getByRole("button", { name: "ค้างชำระ" })
+    ).toHaveAttribute("aria-pressed", "true")
+  },
+}
 
 /** Spaced items instead of one joined bar. */
 export const Spaced: Story = { args: { spacing: 2, variant: "default" } }
+
+export const Vertical: Story = { args: { orientation: "vertical" } }
 
 /** Icon-only view switcher; each item has an aria-label. */
 export const ViewSwitcher: Story = {
@@ -79,5 +121,37 @@ export const ViewSwitcher: Story = {
         <LayoutGridIcon />
       </ToggleGroupItem>
     </ToggleGroup>
+  ),
+}
+
+const states = ["rest", "hover", "focus-visible", "pressed", "disabled"] as const
+
+/** Item states per variant (forced hover/focus via the pseudo-states addon). */
+export const States: Story = {
+  parameters: { layout: "padded", pseudo: pseudoByAttribute },
+  render: () => (
+    <StateGrid
+      rows={states}
+      columns={variants}
+      renderCell={(state, variant) => (
+        <ToggleGroup
+          aria-label={`ตัวอย่าง ${state} ${variant}`}
+          variant={variant}
+          size="sm"
+          defaultValue={state === "pressed" ? ["a"] : []}
+        >
+          <ToggleGroupItem
+            value="a"
+            disabled={state === "disabled"}
+            data-pseudo={
+              state === "hover" || state === "focus-visible" ? state : undefined
+            }
+          >
+            ค้างชำระ
+          </ToggleGroupItem>
+          <ToggleGroupItem value="b">ชำระแล้ว</ToggleGroupItem>
+        </ToggleGroup>
+      )}
+    />
   ),
 }
