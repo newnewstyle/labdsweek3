@@ -1,0 +1,113 @@
+/*
+ * Combobox: a searchable select. The input is an InputGroup; the popup
+ * matches DropdownMenu's translucent, blurred surface.
+ */
+@reference "../../styles/reference.css";
+
+@layer components {
+  .trigger {
+    @apply [&_svg]:size-4;
+  }
+
+  .chevron {
+    @apply pointer-events-none size-4 text-muted-foreground;
+  }
+
+  .noPointer {
+    @apply pointer-events-none;
+  }
+
+  .inputGroup[data-slot="input-group"] {
+    @apply w-auto;
+  }
+
+  .triggerButton[data-slot="input-group-button"] {
+    @apply data-pressed:bg-transparent;
+  }
+
+  /* the clear button replaces the chevron once a value is chosen */
+  [data-slot="input-group"]:has([data-slot="combobox-clear"]) .triggerButton {
+    @apply hidden;
+  }
+
+  /* ---------- popup ---------- */
+
+  .positioner {
+    @apply isolate z-50;
+  }
+
+  .content {
+    @apply relative max-h-(--available-height) w-(--anchor-width) max-w-(--available-width) min-w-[calc(var(--anchor-width)+--spacing(7))] origin-(--transform-origin) overflow-hidden rounded-lg bg-popover/70 text-popover-foreground shadow-md ring-1 ring-foreground/10 duration-100;
+    @apply data-[chips=true]:min-w-(--anchor-width);
+    /* frosted-glass backdrop */
+    @apply before:pointer-events-none before:absolute before:inset-0 before:-z-1 before:rounded-[inherit] before:backdrop-blur-2xl before:backdrop-saturate-150;
+    /* a search box placed inside the popup */
+    @apply *:data-[slot=input-group]:m-1 *:data-[slot=input-group]:mb-0 *:data-[slot=input-group]:h-8 *:data-[slot=input-group]:border-input/30 *:data-[slot=input-group]:bg-input/30 *:data-[slot=input-group]:shadow-none;
+    /* items: tint on keyboard highlight */
+    @apply **:data-[slot$=-item]:focus:bg-foreground/10 **:data-[slot$=-item]:data-highlighted:bg-foreground/10;
+    @apply **:data-[slot$=-separator]:bg-foreground/5;
+    /* open / close animation */
+    @apply animate-none! data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95;
+    @apply data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95;
+    @apply data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2;
+    @apply data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2;
+    @apply data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2;
+  }
+
+  .list {
+    @apply max-h-[min(calc(--spacing(72)---spacing(9)),calc(var(--available-height)---spacing(9)))] scroll-py-1 overflow-y-auto overscroll-contain p-1 data-empty:p-0;
+    scrollbar-width: none;
+  }
+
+  .item {
+    @apply relative flex w-full cursor-default items-center gap-2 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none;
+    @apply data-highlighted:text-accent-foreground data-highlighted:**:text-accent-foreground;
+    @apply data-disabled:pointer-events-none data-disabled:opacity-50;
+    @apply [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0;
+  }
+
+  .itemIndicator {
+    @apply pointer-events-none absolute right-2 flex size-4 items-center justify-center;
+  }
+
+  .label {
+    @apply px-2 py-1.5 text-xs text-muted-foreground;
+  }
+
+  /* "no results" shows only when the popup has nothing to list */
+  .empty {
+    @apply hidden w-full justify-center py-2 text-center text-sm text-muted-foreground;
+  }
+
+  .content[data-empty] .empty {
+    @apply flex;
+  }
+
+  .separator {
+    @apply -mx-1 my-1 h-px bg-border;
+  }
+
+  /* ---------- multiple selection (chips) ---------- */
+
+  .chips {
+    @apply flex min-h-8 flex-wrap items-center gap-1 rounded-lg border border-input bg-transparent bg-clip-padding px-2.5 py-1 text-sm transition-colors;
+    @apply focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50;
+    @apply has-aria-invalid:border-destructive has-aria-invalid:ring-3 has-aria-invalid:ring-destructive/20;
+    @apply has-data-[slot=combobox-chip]:px-1;
+    @apply dark:bg-input/30 dark:has-aria-invalid:border-destructive/50 dark:has-aria-invalid:ring-destructive/40;
+  }
+
+  .chip {
+    @apply flex h-[calc(--spacing(5.25))] w-fit items-center justify-center gap-1 rounded-sm bg-muted px-1.5 text-xs font-medium whitespace-nowrap text-foreground;
+    @apply has-disabled:pointer-events-none has-disabled:cursor-not-allowed has-disabled:opacity-50;
+    @apply has-data-[slot=combobox-chip-remove]:pr-0;
+  }
+
+  .chipRemove[data-slot="combobox-chip-remove"] {
+    @apply -ml-1 opacity-50 hover:opacity-100;
+  }
+
+  .chipsInput {
+    @apply min-w-16 flex-1 outline-none;
+  }
+}

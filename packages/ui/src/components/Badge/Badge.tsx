@@ -3,13 +3,7 @@ import { useRender } from "@base-ui/react/use-render"
 import { cn } from "cn"
 
 import styles from "./Badge.module.css"
-
-type BadgeVariant =
-  "default" | "secondary" | "destructive" | "outline" | "ghost" | "link"
-
-type BadgeProps = useRender.ComponentProps<"span"> & {
-  variant?: BadgeVariant
-}
+import type { BadgeProps, BadgeVariant } from "./Badge.types"
 
 function Badge({
   className,

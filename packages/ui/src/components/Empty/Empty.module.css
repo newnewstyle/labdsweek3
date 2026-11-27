@@ -1,0 +1,32 @@
+/* Empty state: icon, title, description, then actions, centred. */
+@reference "../../styles/reference.css";
+
+@layer components {
+  .empty {
+    @apply flex w-full min-w-0 flex-1 flex-col items-center justify-center gap-4 rounded-xl border-dashed p-6 text-center text-balance;
+  }
+
+  .header {
+    @apply flex max-w-sm flex-col items-center gap-2;
+  }
+
+  .media {
+    @apply mb-2 flex shrink-0 items-center justify-center bg-transparent [&_svg]:pointer-events-none [&_svg]:shrink-0;
+  }
+
+  .media[data-variant="icon"] {
+    @apply size-8 rounded-lg bg-muted text-foreground [&_svg]:size-4;
+  }
+
+  .title {
+    @apply font-heading text-sm font-semibold tracking-tight;
+  }
+
+  .description {
+    @apply text-sm/relaxed text-muted-foreground [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary;
+  }
+
+  .content {
+    @apply flex w-full max-w-sm min-w-0 flex-col items-center gap-2.5 text-sm text-balance;
+  }
+}

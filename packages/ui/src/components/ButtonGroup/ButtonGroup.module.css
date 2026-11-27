@@ -1,0 +1,58 @@
+/*
+ * ButtonGroup styles. Children lose their inner corners and the border they
+ * share with the previous child, so the group reads as one bar.
+ * Everything sits in @layer components so a utility passed via `className`
+ * (utilities layer) always wins.
+ */
+@reference "../../styles/reference.css";
+
+@layer components {
+  .group {
+    @apply flex w-fit items-stretch;
+  }
+
+  /* Lift the focused child so its ring is not hidden under its neighbour. */
+  .group > :focus-visible {
+    @apply relative z-10;
+  }
+
+  .group > input {
+    @apply flex-1;
+  }
+
+  /* A group of groups: keep a gap instead of joining them. */
+  .group:has(> [data-slot="button-group"]) {
+    @apply gap-2;
+  }
+
+  .group[data-orientation="horizontal"] > :not(:first-child) {
+    @apply rounded-l-none border-l-0;
+  }
+
+  .group[data-orientation="horizontal"] > :not(:last-child) {
+    @apply rounded-r-none;
+  }
+
+  .group[data-orientation="vertical"] {
+    @apply flex-col;
+  }
+
+  .group[data-orientation="vertical"] > :not(:first-child) {
+    @apply rounded-t-none border-t-0;
+  }
+
+  .group[data-orientation="vertical"] > :not(:last-child) {
+    @apply rounded-b-none;
+  }
+
+  .text {
+    @apply flex items-center gap-2 rounded-lg border border-border bg-muted px-2.5 text-sm font-medium text-muted-foreground;
+    @apply [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4;
+  }
+
+  /* Raised specificity so it beats Separator's own module rules. */
+  .separator[data-slot="button-group-separator"] {
+    @apply relative self-stretch bg-input;
+    @apply data-vertical:h-auto;
+  }
+}

@@ -1,0 +1,30 @@
+/* Pagination: page links are Buttons (ghost; the current page is outline). */
+@reference "../../styles/reference.css";
+
+@layer components {
+  .pagination {
+    @apply mx-auto flex w-full justify-center;
+  }
+
+  .content {
+    @apply flex items-center gap-0.5;
+  }
+
+  /* trim padding on the chevron side */
+  .previous {
+    @apply pl-1.5!;
+  }
+
+  .next {
+    @apply pr-1.5!;
+  }
+
+  /* text hides on phones; the chevron and aria-label remain */
+  .label {
+    @apply hidden sm:block;
+  }
+
+  .ellipsis {
+    @apply flex size-8 items-center justify-center [&_svg]:size-4;
+  }
+}

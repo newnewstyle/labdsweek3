@@ -8,6 +8,7 @@ import { XIcon } from "lucide-react"
 import { Button } from "../Button"
 
 import styles from "./Dialog.module.css"
+import type { DialogContentProps, DialogFooterProps } from "./Dialog.types"
 
 function Dialog({ ...props }: DialogPrimitive.Root.Props) {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />
@@ -36,10 +37,6 @@ function DialogOverlay({
       {...props}
     />
   )
-}
-
-type DialogContentProps = DialogPrimitive.Popup.Props & {
-  showCloseButton?: boolean
 }
 
 function DialogContent({
@@ -81,10 +78,6 @@ function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
       {...props}
     />
   )
-}
-
-type DialogFooterProps = React.ComponentProps<"div"> & {
-  showCloseButton?: boolean
 }
 
 function DialogFooter({

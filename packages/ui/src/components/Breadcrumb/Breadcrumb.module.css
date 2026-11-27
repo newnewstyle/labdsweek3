@@ -1,0 +1,29 @@
+/* Breadcrumb: muted trail, current page in foreground. */
+@reference "../../styles/reference.css";
+
+@layer components {
+  .list {
+    @apply flex flex-wrap items-center gap-1.5 text-sm wrap-break-word text-muted-foreground;
+  }
+
+  .item {
+    @apply inline-flex items-center gap-1;
+  }
+
+  .link {
+    @apply rounded-sm transition-colors outline-none hover:text-foreground;
+    @apply focus-visible:ring-3 focus-visible:ring-ring/50;
+  }
+
+  .page {
+    @apply font-normal text-foreground;
+  }
+
+  .separator {
+    @apply [&>svg]:size-3.5;
+  }
+
+  .ellipsis {
+    @apply flex size-5 items-center justify-center [&>svg]:size-4;
+  }
+}

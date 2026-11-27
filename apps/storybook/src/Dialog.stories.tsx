@@ -10,11 +10,14 @@ import {
   DialogTrigger,
   Input,
   Label,
-} from "@scope/ui";
+} from "@newnewstyle/ui";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 
+import { usageDoc } from "./lib/usage-doc";
 import { openOverlayStory } from "./story-helpers";
+import usage from "@ui-docs/components/Dialog/Dialog.md?raw";
+import { dialogSpec } from "@ui-docs/components/Dialog/Dialog.spec";
 
 type DialogStoryArgs = {
   showCloseButton: boolean;
@@ -24,7 +27,8 @@ type DialogStoryArgs = {
 
 function ExampleDialog({ showCloseButton, footerCloseButton, defaultOpen }: DialogStoryArgs) {
   return (
-    <Dialog defaultOpen={defaultOpen}>
+    // A form dialog: an outside click must not throw away what was typed.
+    <Dialog defaultOpen={defaultOpen} disablePointerDismissal>
       <DialogTrigger render={<Button variant="outline" />}>แก้ไขโปรไฟล์</DialogTrigger>
       <DialogContent showCloseButton={showCloseButton}>
         <DialogHeader>
@@ -46,6 +50,9 @@ function ExampleDialog({ showCloseButton, footerCloseButton, defaultOpen }: Dial
 const meta = {
   title: "Components/Dialog",
   component: ExampleDialog,
+  parameters: {
+    docs: { description: { component: usageDoc(usage, dialogSpec) } },
+  },
   args: { showCloseButton: true, footerCloseButton: false, defaultOpen: false },
   argTypes: {
     showCloseButton: { control: "boolean", description: "`DialogContent`: the × button top-right." },

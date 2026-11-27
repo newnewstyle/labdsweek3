@@ -1,4 +1,4 @@
-import { Separator } from "@scope/ui";
+import { Separator } from "@newnewstyle/ui";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta = {
@@ -31,7 +31,7 @@ export const InContent: Story = {
   render: () => (
     <div className="w-80 text-sm">
       <div className="flex flex-col gap-1">
-        <h4 className="font-medium">@scope/ui</h4>
+        <h4 className="font-medium">@newnewstyle/ui</h4>
         <p className="text-muted-foreground">React design system บน Base UI</p>
       </div>
       <Separator className="my-4" />

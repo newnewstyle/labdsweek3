@@ -1,4 +1,4 @@
-# @scope/ui
+# @newnewstyle/ui
 
 React design system built on [Base UI](https://base-ui.com) in the
 [shadcn/ui](https://ui.shadcn.com) style, with Tailwind CSS v4 design tokens.
@@ -6,7 +6,7 @@ React design system built on [Base UI](https://base-ui.com) in the
 ## Install
 
 ```bash
-npm install @scope/ui
+npm install @newnewstyle/ui
 ```
 
 Peer dependencies: `react` and `react-dom` 19, `next-themes` (used by `Toaster`), and Tailwind CSS v4
@@ -18,7 +18,7 @@ In your app's main CSS file, import the stylesheet after Tailwind:
 
 ```css
 @import "tailwindcss";
-@import "@scope/ui/styles.css";
+@import "@newnewstyle/ui/styles.css";
 ```
 
 The stylesheet contains the design tokens and all component styles, and tells Tailwind to scan the
@@ -32,23 +32,32 @@ package, so no extra `@source` is needed.
 ## Usage
 
 ```tsx
-import { Button } from "@scope/ui";
+import { Button } from "@newnewstyle/ui";
 
 export default function Page() {
   return <Button variant="outline">Click me</Button>;
 }
 ```
 
-To render as a link, use Base UI's `render` prop:
+To render as a link, use Base UI's `render` prop and set `role="link"` so it is announced as one:
 
 ```tsx
-<Button nativeButton={false} render={<a href="/dashboard" />}>
+<Button nativeButton={false} role="link" render={<a href="/dashboard" />}>
   Dashboard
 </Button>
 ```
 
 ## Components
 
-AlertDialog, Avatar, Badge, Button, Checkbox, Dialog, DropdownMenu, Input, Label, Select,
-Separator, Sheet, Sidebar, Skeleton, Toaster (Sonner), Switch, Table, Tabs, Textarea, Tooltip, and
-the `cn` class-name helper.
+Accordion, Alert, AlertDialog, Avatar, Badge, Breadcrumb, Button, ButtonGroup, Calendar, Card,
+Chart, Checkbox, Combobox, DataTable, Dialog, Drawer, DropdownMenu, Empty, Field, FileDropzone,
+Input, InputGroup, Label, Money (+ `formatMoney`), Pagination, Popover, Progress, RadioGroup,
+ResponsiveDialog, ScrollArea, Select, Separator, Sheet, Sidebar, Skeleton, Spinner, StatCard,
+StatusBadge, Switch, Table, Tabs, Textarea, Timeline, Toaster (Sonner, + `toast`), Toggle,
+ToggleGroup, Tooltip, and the `cn` class-name helper.
+
+**Charts:** `ChartContainer` wraps [recharts](https://recharts.org) primitives that you compose
+yourself, so add `recharts` to your app to build charts. Use the `--chart-1` … `--chart-5` tokens
+in that order for series colours.
+
+**Calendar** shows Thai month names and Buddhist-era years by default.

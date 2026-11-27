@@ -1,0 +1,122 @@
+/*
+ * Field: label + control + description + error, laid out by orientation.
+ * A FieldLabel that wraps a whole Field becomes a selectable choice card.
+ * Label rules use [data-slot] for specificity over Label's own module.
+ */
+@reference "../../styles/reference.css";
+
+@layer components {
+  .set {
+    @apply flex flex-col gap-4;
+    @apply has-[>[data-slot=checkbox-group]]:gap-3 has-[>[data-slot=radio-group]]:gap-3;
+  }
+
+  .legend {
+    @apply mb-1.5 font-medium;
+  }
+
+  .legend[data-variant="legend"] {
+    @apply text-base;
+  }
+
+  .legend[data-variant="label"] {
+    @apply text-sm;
+  }
+
+  .group {
+    @apply @container/field-group flex w-full flex-col gap-5;
+    @apply data-[slot=checkbox-group]:gap-3 *:data-[slot=field-group]:gap-4;
+  }
+
+  /* ---------- field + orientation ---------- */
+
+  .field {
+    @apply flex w-full gap-2 data-[invalid=true]:text-destructive;
+  }
+
+  .field[data-orientation="vertical"] {
+    @apply flex-col *:w-full [&>.sr-only]:w-auto;
+  }
+
+  .field[data-orientation="horizontal"] {
+    @apply flex-row items-center *:data-[slot=field-label]:flex-auto;
+    @apply has-[>[data-slot=field-content]]:items-start;
+    @apply has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px;
+  }
+
+  /* stacked on narrow groups, side by side once the group is ≥ 28rem */
+  .field[data-orientation="responsive"] {
+    @apply flex-col *:w-full [&>.sr-only]:w-auto;
+    @apply @md/field-group:flex-row @md/field-group:items-center @md/field-group:*:w-auto;
+    @apply @md/field-group:*:data-[slot=field-label]:flex-auto;
+    @apply @md/field-group:has-[>[data-slot=field-content]]:items-start;
+    @apply @md/field-group:has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px;
+  }
+
+  .content {
+    @apply flex flex-1 flex-col gap-0.5 leading-snug;
+  }
+
+  /* ---------- label / title ---------- */
+
+  .label[data-slot="field-label"] {
+    @apply flex w-fit gap-2 leading-snug;
+    @apply has-data-checked:border-primary/30 has-data-checked:bg-primary/5;
+    @apply dark:has-data-checked:border-primary/20 dark:has-data-checked:bg-primary/10;
+  }
+
+  /* choice card: a FieldLabel wrapping a Field */
+  .label[data-slot="field-label"]:has(> [data-slot="field"]) {
+    @apply w-full flex-col rounded-lg border;
+    @apply not-has-[:disabled,[data-disabled]]:hover:bg-muted/50;
+    @apply has-[:focus-visible]:border-ring has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/50;
+    @apply *:data-[slot=field]:p-2.5;
+  }
+
+  .title {
+    @apply flex w-fit items-center gap-2 text-sm font-medium;
+  }
+
+  .field[data-disabled="true"] .label[data-slot="field-label"],
+  .field[data-disabled="true"] .title {
+    @apply opacity-50;
+  }
+
+  /* ---------- description / error ---------- */
+
+  .description {
+    @apply text-left text-sm leading-normal font-normal text-muted-foreground;
+    @apply last:mt-0 nth-last-2:-mt-1;
+    @apply [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary;
+  }
+
+  .field[data-orientation="horizontal"] .description {
+    @apply text-balance;
+  }
+
+  [data-variant="legend"] + .description {
+    @apply -mt-1.5;
+  }
+
+  .error {
+    @apply text-sm font-normal text-destructive;
+  }
+
+  .errorList {
+    @apply ml-4 flex list-disc flex-col gap-1;
+  }
+
+  /* ---------- separator ---------- */
+
+  .separator {
+    @apply relative -my-2 h-5 text-sm;
+  }
+
+  .separatorLine {
+    @apply absolute inset-0 top-1/2;
+  }
+
+  .separatorContent {
+    @apply relative mx-auto block w-fit bg-background px-2 text-muted-foreground;
+  }
+}

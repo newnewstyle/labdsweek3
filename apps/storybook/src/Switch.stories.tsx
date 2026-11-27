@@ -1,4 +1,4 @@
-import { Label, Switch, type SwitchSize } from "@scope/ui";
+import { Label, Switch, type SwitchSize } from "@newnewstyle/ui";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, fn, userEvent, within } from "storybook/test";
 

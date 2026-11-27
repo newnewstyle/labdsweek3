@@ -29,11 +29,6 @@
     @apply dark:border-input dark:bg-input/30 dark:hover:bg-input/50;
   }
 
-  .button[data-variant="secondary"] {
-    @apply bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)];
-    @apply aria-expanded:bg-secondary aria-expanded:text-secondary-foreground;
-  }
-
   .button[data-variant="ghost"] {
     @apply hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground;
     @apply dark:hover:bg-muted/50;
@@ -45,8 +40,26 @@
     @apply dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40;
   }
 
+  /* Solid red: only for the final confirm of an irreversible delete. */
+  .button[data-variant="destructive-solid"] {
+    @apply bg-destructive text-destructive-foreground hover:bg-destructive/85;
+    @apply focus-visible:border-destructive/40 focus-visible:ring-destructive/30;
+    @apply dark:focus-visible:ring-destructive/40;
+  }
+
   .button[data-variant="link"] {
-    @apply text-primary underline-offset-4 hover:underline;
+    @apply text-link underline-offset-4 hover:underline;
+  }
+
+  /* ---------- loading ---------- */
+
+  /* Loading is disabled, but stays at full opacity so it reads as busy. */
+  .button[data-loading] {
+    @apply disabled:opacity-100;
+  }
+
+  .spinner {
+    @apply animate-spin;
   }
 
   /* ---------- sizes ---------- */
@@ -87,8 +100,20 @@
     @apply size-9;
   }
 
+  /* Link reads as inline text: no height or padding from size (size still
+     sets the font size). Higher specificity so it beats the size rules. */
+  .button[data-variant="link"][data-size] {
+    @apply h-auto px-0;
+  }
+
   /* Small sizes keep the large radius when grouped in a button group. */
-  [data-slot="button-group"] .button:is([data-size="xs"], [data-size="sm"], [data-size="icon-xs"], [data-size="icon-sm"]) {
+  [data-slot="button-group"]
+    .button:is(
+      [data-size="xs"],
+      [data-size="sm"],
+      [data-size="icon-xs"],
+      [data-size="icon-sm"]
+    ) {
     @apply rounded-lg;
   }
 }

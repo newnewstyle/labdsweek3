@@ -1,0 +1,24 @@
+/* Progress: optional label + value on one row, a thin bar below. */
+@reference "../../styles/reference.css";
+
+@layer components {
+  .progress {
+    @apply flex flex-wrap gap-3;
+  }
+
+  .track {
+    @apply relative flex h-1 w-full items-center overflow-x-hidden rounded-full bg-muted;
+  }
+
+  .indicator {
+    @apply h-full bg-primary transition-all;
+  }
+
+  .label {
+    @apply text-sm font-medium;
+  }
+
+  .value {
+    @apply ml-auto text-sm text-muted-foreground tabular-nums;
+  }
+}

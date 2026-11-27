@@ -1,0 +1,28 @@
+/* StatCard: a small Card with label, a large tabular number, and context. */
+@reference "../../styles/reference.css";
+
+@layer components {
+  .card[data-slot="stat-card"] {
+    @apply gap-1 px-(--card-spacing);
+  }
+
+  .header {
+    @apply flex items-center justify-between gap-2;
+  }
+
+  .label {
+    @apply text-sm text-muted-foreground;
+  }
+
+  .icon {
+    @apply flex size-4 items-center text-muted-foreground [&_svg]:size-4;
+  }
+
+  .value {
+    @apply font-heading text-2xl font-semibold tracking-tight tabular-nums;
+  }
+
+  .description {
+    @apply text-xs text-muted-foreground;
+  }
+}

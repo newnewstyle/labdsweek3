@@ -1,4 +1,4 @@
-import { Skeleton } from "@scope/ui";
+import { Skeleton } from "@newnewstyle/ui";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta = {

@@ -2,7 +2,7 @@
 
 @layer components {
   .overlay {
-    @apply fixed inset-0 isolate z-50 bg-black/10 duration-100 supports-backdrop-filter:backdrop-blur-xs;
+    @apply fixed inset-0 isolate z-50 bg-overlay duration-100 supports-backdrop-filter:backdrop-blur-xs;
     @apply data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0;
   }
 
@@ -10,6 +10,21 @@
     @apply fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-xl bg-popover p-4 text-sm text-popover-foreground ring-1 ring-foreground/10 duration-100 outline-none sm:max-w-sm;
     @apply data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95;
     @apply data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95;
+    /* Never taller than the screen: header and footer stay, the body
+       (the row between them) scrolls. */
+    @apply max-h-[calc(100dvh-2rem)] grid-rows-[auto_minmax(0,1fr)_auto];
+  }
+
+  /* The body: everything that is not header, footer or the corner X.
+     Inset padding keeps the 3px focus ring of full-width inputs visible
+     inside the scroll area. */
+  .content
+    > :not(
+      [data-slot="dialog-header"],
+      [data-slot="dialog-footer"],
+      [data-slot="dialog-close"]
+    ) {
+    @apply -m-1 min-h-0 overflow-y-auto p-1;
   }
 
   .close {

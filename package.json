@@ -1,5 +1,5 @@
 {
-  "name": "scope-ui-monorepo",
+  "name": "newnewstyle-ui-monorepo",
   "private": true,
   "packageManager": "pnpm@10.34.9",
   "scripts": {
@@ -10,7 +10,7 @@
     "test": "turbo run test",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release": "turbo run build --filter=@scope/ui && changeset publish"
+    "release": "turbo run build --filter=@newnewstyle/ui && changeset publish"
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.1",

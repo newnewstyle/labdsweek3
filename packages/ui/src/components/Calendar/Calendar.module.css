@@ -1,0 +1,157 @@
+/*
+ * Calendar (react-day-picker). Cell size and radius come from --cell-size
+ * and --cell-radius on the root. Day buttons are our Button (ghost, icon);
+ * their rules use [data-slot] for specificity over Button's module.
+ */
+@reference "../../styles/reference.css";
+
+@layer components {
+  .calendar {
+    @apply bg-background p-2 [--cell-radius:var(--radius-md)] [--cell-size:--spacing(7)];
+  }
+
+  /* inside a card or popover the calendar takes the surface's colour */
+  [data-slot="card-content"] .calendar,
+  [data-slot="popover-content"] .calendar {
+    @apply bg-transparent;
+  }
+
+  .root {
+    @apply w-fit;
+  }
+
+  .months {
+    @apply relative flex flex-col gap-4 md:flex-row;
+  }
+
+  .month {
+    @apply flex w-full flex-col gap-4;
+  }
+
+  .nav {
+    @apply absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1;
+  }
+
+  /* previous / next month: styled like a ghost icon button */
+  .navButton {
+    @apply inline-flex size-(--cell-size) items-center justify-center rounded-lg p-0 transition-colors outline-none select-none;
+    @apply hover:bg-muted hover:text-foreground aria-disabled:opacity-50;
+    @apply focus-visible:ring-3 focus-visible:ring-ring/50;
+    @apply dark:hover:bg-muted/50;
+  }
+
+  .caption {
+    @apply flex h-(--cell-size) w-full items-center justify-center px-(--cell-size);
+  }
+
+  .dropdowns {
+    @apply flex h-(--cell-size) w-full items-center justify-center gap-1.5 text-sm font-medium;
+  }
+
+  .dropdownRoot {
+    @apply relative rounded-(--cell-radius);
+  }
+
+  .dropdown {
+    @apply absolute inset-0 bg-popover opacity-0;
+  }
+
+  .captionLabel {
+    @apply text-sm font-medium select-none;
+  }
+
+  .captionDropdown {
+    @apply flex items-center gap-1 rounded-(--cell-radius) [&>svg]:size-3.5 [&>svg]:text-muted-foreground;
+  }
+
+  .grid {
+    @apply w-full border-collapse;
+  }
+
+  .weekdays {
+    @apply flex;
+  }
+
+  .weekday {
+    @apply flex-1 rounded-(--cell-radius) text-[0.8rem] font-normal text-muted-foreground select-none;
+  }
+
+  .week {
+    @apply mt-2 flex w-full;
+  }
+
+  .weekNumberHeader {
+    @apply w-(--cell-size) select-none;
+  }
+
+  .weekNumber {
+    @apply text-[0.8rem] text-muted-foreground select-none;
+  }
+
+  .weekNumberCell {
+    @apply flex size-(--cell-size) items-center justify-center text-center;
+  }
+
+  /* ---------- day cells ---------- */
+
+  .day {
+    @apply relative aspect-square h-full w-full rounded-(--cell-radius) p-0 text-center select-none;
+    @apply [&:last-child[data-selected=true]_button]:rounded-r-(--cell-radius);
+  }
+
+  .dayPlain {
+    @apply [&:first-child[data-selected=true]_button]:rounded-l-(--cell-radius);
+  }
+
+  .dayWithWeekNumber {
+    @apply [&:nth-child(2)[data-selected=true]_button]:rounded-l-(--cell-radius);
+  }
+
+  .rangeStart {
+    @apply relative isolate z-0 rounded-l-(--cell-radius) bg-muted after:absolute after:inset-y-0 after:right-0 after:w-4 after:bg-muted;
+  }
+
+  .rangeMiddle {
+    @apply rounded-none;
+  }
+
+  .rangeEnd {
+    @apply relative isolate z-0 rounded-r-(--cell-radius) bg-muted after:absolute after:inset-y-0 after:left-0 after:w-4 after:bg-muted;
+  }
+
+  .today {
+    @apply rounded-(--cell-radius) bg-muted text-foreground data-[selected=true]:rounded-none;
+  }
+
+  .outside {
+    @apply text-muted-foreground aria-selected:text-muted-foreground;
+  }
+
+  .disabled {
+    @apply text-muted-foreground opacity-50;
+  }
+
+  .hidden {
+    @apply invisible;
+  }
+
+  .chevron {
+    @apply size-4;
+  }
+
+  /* ---------- day button ---------- */
+
+  .dayButton[data-slot="button"] {
+    @apply relative isolate z-10 flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 border-0 leading-none font-normal;
+    @apply dark:hover:text-foreground [&>span]:text-xs [&>span]:opacity-70;
+    @apply data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground;
+    @apply data-[range-start=true]:rounded-(--cell-radius) data-[range-start=true]:rounded-l-(--cell-radius) data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground;
+    @apply data-[range-end=true]:rounded-(--cell-radius) data-[range-end=true]:rounded-r-(--cell-radius) data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground;
+    @apply data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-muted data-[range-middle=true]:text-foreground;
+  }
+
+  /* keyboard focus ring sits on the focused day cell's button */
+  [data-focused="true"] > .dayButton[data-slot="button"] {
+    @apply relative z-10 border-ring ring-[3px] ring-ring/50;
+  }
+}

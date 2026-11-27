@@ -1,0 +1,37 @@
+/* Alert. An icon as first child moves title/description to column 2. */
+@reference "../../styles/reference.css";
+
+@layer components {
+  .alert {
+    @apply relative grid w-full gap-0.5 rounded-lg border bg-card px-2.5 py-2 text-left text-sm text-card-foreground;
+    @apply has-data-[slot=alert-action]:pr-18;
+    @apply has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-2;
+    @apply *:[svg]:row-span-2 *:[svg]:size-4 *:[svg]:translate-y-0.5 *:[svg]:text-current;
+  }
+
+  .alert[data-variant="destructive"] {
+    @apply text-destructive;
+  }
+
+  .title {
+    @apply font-medium [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground;
+  }
+
+  .alert:has(> svg) .title,
+  .alert:has(> svg) .description {
+    grid-column-start: 2;
+  }
+
+  .description {
+    @apply text-sm text-balance text-muted-foreground md:text-pretty;
+    @apply [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground [&_p:not(:last-child)]:mb-4;
+  }
+
+  .alert[data-variant="destructive"] .description {
+    @apply text-destructive/90;
+  }
+
+  .action {
+    @apply absolute top-2 right-2;
+  }
+}

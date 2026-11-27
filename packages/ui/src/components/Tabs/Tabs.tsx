@@ -4,6 +4,7 @@ import { Tabs as TabsPrimitive } from "@base-ui/react/tabs"
 import { cn } from "cn"
 
 import styles from "./Tabs.module.css"
+import type { TabsListProps, TabsListVariant } from "./Tabs.types"
 
 function Tabs({
   className,
@@ -19,10 +20,6 @@ function Tabs({
     />
   )
 }
-
-type TabsListVariant = "default" | "line"
-
-type TabsListProps = TabsPrimitive.List.Props & { variant?: TabsListVariant }
 
 function TabsList({ className, variant = "default", ...props }: TabsListProps) {
   return (

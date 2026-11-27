@@ -1,22 +1,29 @@
-import { Badge, type BadgeVariant } from "@scope/ui";
+import { Badge, type BadgeVariant } from "@newnewstyle/ui";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { BadgeCheckIcon, ClockIcon } from "lucide-react";
 import { expect, within } from "storybook/test";
+
+import { usageDoc } from "./lib/usage-doc";
+import usage from "@ui-docs/components/Badge/Badge.md?raw";
+import { badgeSpec } from "@ui-docs/components/Badge/Badge.spec";
 
 import { pseudoByAttribute, StateGrid } from "./story-helpers";
 
 const variants = [
   "default",
   "secondary",
+  "success",
+  "warning",
   "destructive",
   "outline",
-  "ghost",
-  "link",
 ] as const satisfies readonly BadgeVariant[];
 
 const meta = {
   title: "Components/Badge",
   component: Badge,
+  parameters: {
+    docs: { description: { component: usageDoc(usage, badgeSpec) } },
+  },
   args: { children: "ใหม่", variant: "default" },
   argTypes: {
     variant: {
@@ -74,7 +81,7 @@ export const States: Story = {
   parameters: { pseudo: pseudoByAttribute },
   render: (args) => (
     <StateGrid
-      rows={["rest", "hover", "focus-visible", "invalid"] as const}
+      rows={["rest", "hover", "focus-visible"] as const}
       columns={variants}
       renderCell={(state, variant) => (
         <Badge
@@ -82,7 +89,6 @@ export const States: Story = {
           variant={variant}
           render={<a href="#badge" />}
           data-pseudo={state === "hover" || state === "focus-visible" ? state : undefined}
-          aria-invalid={state === "invalid" || undefined}
         >
           {variant}
         </Badge>

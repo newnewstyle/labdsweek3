@@ -1,0 +1,49 @@
+/* Card and its parts. Spacing scales with --card-spacing (set by data-size). */
+@reference "../../styles/reference.css";
+
+@layer components {
+  .card {
+    @apply flex flex-col gap-(--card-spacing) overflow-hidden rounded-xl bg-card py-(--card-spacing) text-sm text-card-foreground ring-1 ring-foreground/10;
+    @apply [--card-spacing:--spacing(4)];
+    @apply has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0;
+    @apply *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl;
+  }
+
+  .card[data-size="sm"] {
+    @apply [--card-spacing:--spacing(3)];
+  }
+
+  .header {
+    @apply @container/card-header grid auto-rows-min items-start gap-1 rounded-t-xl px-(--card-spacing);
+    @apply has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto];
+  }
+
+  /* A header given `className="border-b"` gets bottom padding. */
+  .header:global(.border-b) {
+    padding-bottom: var(--card-spacing);
+  }
+
+  .title {
+    @apply font-heading text-base leading-snug font-semibold;
+  }
+
+  [data-slot="card"][data-size="sm"] .title {
+    @apply text-sm;
+  }
+
+  .description {
+    @apply text-sm text-muted-foreground;
+  }
+
+  .action {
+    @apply col-start-2 row-span-2 row-start-1 self-start justify-self-end;
+  }
+
+  .content {
+    @apply px-(--card-spacing);
+  }
+
+  .footer {
+    @apply flex items-center rounded-b-xl border-t bg-muted/50 p-(--card-spacing);
+  }
+}

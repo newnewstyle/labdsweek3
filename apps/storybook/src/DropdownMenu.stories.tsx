@@ -14,7 +14,7 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "@scope/ui";
+} from "@newnewstyle/ui";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { LogOutIcon, SettingsIcon, UserIcon } from "lucide-react";
 import { expect, fn, userEvent, within } from "storybook/test";

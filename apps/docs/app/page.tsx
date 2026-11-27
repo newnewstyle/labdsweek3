@@ -1,6 +1,22 @@
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+  Alert,
+  AlertDescription,
+  AlertTitle,
   Badge,
+  type BadgeVariant,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
   Button,
+  type ButtonVariant,
+  Calendar,
   Checkbox,
   Dialog,
   DialogClose,
@@ -10,18 +26,63 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+  Field,
+  FieldDescription,
+  FieldLabel,
   Input,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
   Label,
+  Money,
+  Progress,
+  RadioGroup,
+  RadioGroupItem,
   Separator,
   Skeleton,
+  Spinner,
+  StatCard,
+  StatusBadge,
+  type StatusKey,
   Switch,
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@scope/ui";
+  Timeline,
+  TimelineItem,
+  Toggle,
+} from "@newnewstyle/ui";
 
-const variants = ["default", "outline", "secondary", "ghost", "destructive", "link"] as const;
+const variants = [
+  "default",
+  "outline",
+  "ghost",
+  "destructive",
+  "destructive-solid",
+  "link",
+] as const satisfies readonly ButtonVariant[];
+const badgeVariants = [
+  "default",
+  "secondary",
+  "success",
+  "warning",
+  "destructive",
+  "outline",
+] as const satisfies readonly BadgeVariant[];
+const statuses = [
+  "paid",
+  "due-soon",
+  "overdue",
+  "repair-pending",
+  "repair-in-progress",
+  "repair-done",
+  "repair-urgent",
+] as const satisfies readonly StatusKey[];
 const sizes = ["xs", "sm", "default", "lg"] as const;
 
 function Showcase() {
@@ -36,6 +97,7 @@ function Showcase() {
             </Button>
           ))}
           <Button disabled>disabled</Button>
+          <Button loading>loading</Button>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           {sizes.map((size) => (
@@ -43,7 +105,7 @@ function Showcase() {
               size {size}
             </Button>
           ))}
-          <Button nativeButton={false} render={<a href="https://base-ui.com" />}>
+          <Button nativeButton={false} role="link" render={<a href="https://base-ui.com" />}>
             render as link
           </Button>
         </div>
@@ -52,10 +114,15 @@ function Showcase() {
       <section className="flex flex-col gap-3">
         <h2 className="text-xl">Badge</h2>
         <div className="flex flex-wrap items-center gap-2">
-          {variants.map((variant) => (
+          {badgeVariants.map((variant) => (
             <Badge key={variant} variant={variant}>
               {variant}
             </Badge>
+          ))}
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          {statuses.map((status) => (
+            <StatusBadge key={status} status={status} />
           ))}
         </div>
       </section>
@@ -91,7 +158,7 @@ function Showcase() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>ยืนยันการบันทึก</DialogTitle>
-              <DialogDescription>ตัวอย่าง Dialog จาก @scope/ui</DialogDescription>
+              <DialogDescription>ตัวอย่าง Dialog จาก @newnewstyle/ui</DialogDescription>
             </DialogHeader>
             <DialogFooter>
               <DialogClose render={<Button variant="outline" />}>ยกเลิก</DialogClose>
@@ -104,15 +171,79 @@ function Showcase() {
           <Skeleton className="h-4 w-48" />
         </div>
       </section>
+
+      <section className="flex flex-col gap-3">
+        <h2 className="text-xl">Phase 2 (full demos in Storybook)</h2>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="#">หน้าแรก</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>ผู้เช่า</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <StatCard label="ค้างชำระรวม" value={<Money value={12500} />} description="3 ราย" />
+          <StatCard label="เก็บค่าเช่าแล้ว" value="18 / 24" description={<Progress value={75} aria-label="เก็บแล้ว" />} />
+        </div>
+        <Alert>
+          <AlertTitle>มีบิลค่าน้ำใหม่ 2 รายการ</AlertTitle>
+          <AlertDescription>ตรวจสอบก่อนส่งให้ผู้เช่า</AlertDescription>
+        </Alert>
+        <div className="flex max-w-sm flex-col gap-4">
+          <Field>
+            <FieldLabel htmlFor="rent">ค่าเช่า</FieldLabel>
+            <InputGroup>
+              <InputGroupAddon>฿</InputGroupAddon>
+              <InputGroupInput id="rent" defaultValue="8,500" />
+            </InputGroup>
+            <FieldDescription>บาทต่อเดือน</FieldDescription>
+          </Field>
+          <RadioGroup defaultValue="cash" aria-label="วิธีชำระ">
+            <div className="flex items-center gap-2">
+              <RadioGroupItem value="cash" id="pay-cash" />
+              <Label htmlFor="pay-cash">เงินสด</Label>
+            </div>
+            <div className="flex items-center gap-2">
+              <RadioGroupItem value="transfer" id="pay-transfer" />
+              <Label htmlFor="pay-transfer">โอน</Label>
+            </div>
+          </RadioGroup>
+        </div>
+        <div className="flex items-center gap-3">
+          <Spinner />
+          <Toggle aria-label="ปักหมุด">ปักหมุด</Toggle>
+        </div>
+        <Accordion className="max-w-md">
+          <AccordionItem value="a">
+            <AccordionTrigger>ก๊อกน้ำห้องครัวรั่ว</AccordionTrigger>
+            <AccordionContent>ช่างนัดเข้าวันพรุ่งนี้ 10:00</AccordionContent>
+          </AccordionItem>
+        </Accordion>
+        <Timeline>
+          <TimelineItem title="ส่งเตือนทาง LINE" time="1 พ.ย." />
+          <TimelineItem title="ชำระแล้ว" time="3 พ.ย." tone="success" />
+        </Timeline>
+        <Calendar mode="single" className="w-fit rounded-lg border" />
+        <Empty className="border">
+          <EmptyHeader>
+            <EmptyTitle>ยังไม่มีงานซ่อม</EmptyTitle>
+            <EmptyDescription>งานซ่อมที่ผู้เช่าแจ้งจะแสดงที่นี่</EmptyDescription>
+          </EmptyHeader>
+        </Empty>
+      </section>
     </div>
   );
 }
 
-// Server Component on purpose: verifies @scope/ui (a "use client" bundle) renders under the App Router.
+// Server Component on purpose: verifies @newnewstyle/ui (a "use client" bundle) renders under the App Router.
 export default function Home() {
   return (
     <main className="mx-auto flex max-w-4xl flex-col gap-10 p-8">
-      <h1 className="text-3xl">@scope/ui</h1>
+      <h1 className="text-3xl">@newnewstyle/ui</h1>
       <Showcase />
       <Separator />
       <div data-theme="dark" className="rounded-xl bg-background p-8 text-foreground">
