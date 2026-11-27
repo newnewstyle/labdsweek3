@@ -115,7 +115,7 @@ export const dialogSpec = {
     {
       criterion: "1.4.3 Contrast (Minimum)",
       status: "pass",
-      note: "หัวเรื่อง 19.75 / 16.76, คำอธิบาย 4.81 / 6.76 (สว่าง / มืด คำนวณจากค่า token)",
+      note: "หัวเรื่อง 19.75 / 16.76, คำอธิบาย 5.08 / 6.76 (สว่าง / มืด คำนวณจากค่า token)",
     },
     {
       criterion: "2.5.8 Target Size (Minimum)",

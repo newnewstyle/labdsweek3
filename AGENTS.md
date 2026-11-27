@@ -30,7 +30,8 @@ pinned in the root `packageManager` field.
 packages/ui/
   src/index.ts                  # public API: only what is exported here is public
   src/components/<Name>/        # <Name>.tsx, <Name>.module.css, index.ts (+ <Name>.types.ts, tests)
-                                # + usage docs <Name>.spec.ts / <Name>.md (Button, Badge, Dialog, Tabs)
+                                # + usage docs <Name>.spec.ts / <Name>.md (Badge, Button, Dialog,
+                                #   Field, Input, StatusBadge, Tabs)
   src/components/SETUP.md       # one-time consumer setup shown above every usage doc
   src/lib/component-spec.ts     # ComponentSpec type for <Name>.spec.ts (not exported)
   src/hooks/use-mobile.ts       # internal (used by Sidebar, ResponsiveDialog), not exported
@@ -134,9 +135,6 @@ deletes `dist/` first, so a running dev server briefly logs "Can't resolve '@new
   (`StateGrid`, `pseudoByAttribute`, `avatarDataUri`, `openOverlayStory`) live in
   `src/story-helpers.tsx`. Multi-part components (Dialog, Select, Sidebar…) use a small
   `Example*` wrapper as the meta `component` so its args map to the parts' props.
-  Stories ported from my-app-2 on 25 Nov (Accordion … Timeline, Card, ButtonGroup) still use that
-  app's simpler style (inferred controls from `args`, few `States` matrices or `play`s); bring
-  them up to these rules when touching them.
 - **Usage docs** (`<Name>.spec.ts` rules typed by `ComponentSpec` + `<Name>.md` manual) live next
   to the component in the package but are not exported, bundled or published. Storybook reads them
   from source via the `@ui-docs/*` alias (→ `packages/ui/src/*`, set in `.storybook/main.ts`
@@ -159,6 +157,12 @@ deletes `dist/` first, so a running dev server briefly logs "Can't resolve '@new
     Storybook canvas.
   - Storybook's `phase === "finished"` does not mean the play passed; check the
     `storyFinished` event's `status`.
+  - The preview has no global `<Toaster />`: a story that asserts a toast renders its own.
+  - Below 768px DataTable shows cards instead of the table and ResponsiveDialog renders a
+    Drawer; plays check `matchMedia("(min-width: 768px)")` or query both forms.
+  - Combobox does not re-filter on user-event typing (real typing does). Pick with the keyboard
+    (`{ArrowDown}` opens with the first option highlighted, `{Enter}` picks it), or set the value
+    with an `InputEvent` carrying `inputType` (`typeLikeBrowser` in `Combobox.stories.tsx`).
 - **Color contrast is a token concern.** `--destructive` (both themes; my-app-2's newer
   `oklch(0.53 0.22 27)` was not taken, it drops to 4.01:1 on the hover tint) and light
   `--muted-foreground` were adjusted from my-app-2's values so destructive text passes WCAG AA on

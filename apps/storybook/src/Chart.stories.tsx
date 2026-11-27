@@ -8,6 +8,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
+import { expect, waitFor } from "storybook/test"
 
 import {
   type ChartConfig,
@@ -32,21 +33,49 @@ const config = {
   overdue: { label: "ค้างชำระ", color: "var(--chart-2)" },
 } satisfies ChartConfig
 
+type Args = { config: ChartConfig }
+
 const meta = {
   title: "Components/Chart",
   tags: ["autodocs"],
-} satisfies Meta
+  args: { config },
+  argTypes: {
+    config: {
+      control: "object",
+      description:
+        "One entry per series: `label` and `color` (a token such as `var(--chart-1)`) or `theme` ({ light, dark }). Each becomes `--color-<key>` inside the chart. Use chart-1…5 in order.",
+    },
+  },
+  parameters: {
+    docs: {
+      description: {
+        component:
+          "`ChartContainer` takes `config` and one recharts chart as children; give it a height with `className` (e.g. `h-72`). Add `ChartTooltip` / `ChartLegend` with their `*Content` parts.",
+      },
+    },
+  },
+} satisfies Meta<Args>
 
 export default meta
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<Args>
 
 /**
  * Collected vs overdue per month. Two series use chart slots 1–2 (blue,
  * orange); hover a month for the exact amounts; the legend names them.
  */
 export const CollectedVsOverdue: Story = {
-  render: () => (
-    <ChartContainer config={config} className="h-72 w-full max-w-2xl">
+  play: async ({ canvasElement }) => {
+    const chart = canvasElement.querySelector('[data-slot="chart"]')!
+    const css = chart.querySelector("style")?.textContent ?? ""
+    // Series colours are written per theme; dark mode is keyed on data-theme.
+    await expect(css).toContain("--color-collected: var(--chart-1)")
+    await expect(css).toContain('[data-theme="dark"]')
+    await waitFor(() =>
+      expect(chart.querySelectorAll(".recharts-bar-rectangle").length).toBeGreaterThan(0)
+    )
+  },
+  render: (args) => (
+    <ChartContainer config={args.config} className="h-72 w-full max-w-2xl">
       <BarChart data={monthly} accessibilityLayer>
         <CartesianGrid vertical={false} />
         <XAxis dataKey="month" tickLine={false} axisLine={false} />

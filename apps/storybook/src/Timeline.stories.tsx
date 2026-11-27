@@ -7,12 +7,28 @@ import {
   WrenchIcon,
 } from "lucide-react"
 
-import { Timeline, TimelineItem } from "@newnewstyle/ui"
+import { Timeline, TimelineItem, type TimelineTone } from "@newnewstyle/ui"
+import { expect, within } from "storybook/test"
+
+const tones = [
+  "default",
+  "success",
+  "warning",
+  "destructive",
+] as const satisfies readonly TimelineTone[]
 
 const meta = {
   title: "Components/Timeline",
   component: Timeline,
   tags: ["autodocs"],
+  argTypes: {
+    className: { control: "text" },
+    children: {
+      control: false,
+      description:
+        "`TimelineItem`s, newest first. Each takes `title`, `time` (Date shown in Thai, or text), optional `icon`, `tone` and details as children.",
+    },
+  },
 } satisfies Meta<typeof Timeline>
 
 export default meta
@@ -20,6 +36,13 @@ type Story = StoryObj<typeof meta>
 
 /** Reminder history for one tenant, newest first. */
 export const ReminderHistory: Story = {
+  play: async ({ canvasElement }) => {
+    const list = within(canvasElement).getByRole("list")
+    await expect(list).toHaveAttribute("data-slot", "timeline")
+    await expect(within(list).getAllByRole("listitem")).toHaveLength(3)
+    // Date times render as <time> in Thai with a machine-readable dateTime.
+    await expect(list.querySelector("time")).toHaveAttribute("datetime")
+  },
   render: () => (
     <Timeline className="max-w-md">
       <TimelineItem
@@ -46,6 +69,21 @@ export const ReminderHistory: Story = {
       </TimelineItem>
     </Timeline>
   ),
+}
+
+/** Every `tone`: the dot colour. */
+export const Tones: Story = {
+  render: () => (
+    <Timeline className="max-w-md">
+      {tones.map((tone) => (
+        <TimelineItem key={tone} title={`tone ${tone}`} time="27 พ.ย. 2569" tone={tone} />
+      ))}
+    </Timeline>
+  ),
+  play: async ({ canvasElement }) => {
+    const items = within(canvasElement).getAllByRole("listitem")
+    await expect(items.map((i) => i.getAttribute("data-tone"))).toEqual([...tones])
+  },
 }
 
 /** Maintenance status flow: pending → in progress → done. */

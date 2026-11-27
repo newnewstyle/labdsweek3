@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
+import { expect, userEvent, within } from "storybook/test"
 
 import {
   DataTable,
@@ -96,7 +97,16 @@ const meta = {
   argTypes: {
     pageSize: {
       control: { type: "range", min: 3, max: 12, step: 1 },
-      description: "จำนวนแถวต่อหน้า",
+      description: "จำนวนแถวต่อหน้า (ค่าเริ่มต้น 10)",
+      table: { defaultValue: { summary: "10" } },
+    },
+  },
+  parameters: {
+    docs: {
+      description: {
+        component:
+          "Props: `data`, `columns` (`key`, `header`, `cell`, optional `sortValue`, `align: \"end\"` for money, `hideOnMobile`), `getRowId`, `label` (accessible name), optional `filters`, `pageSize` and `empty`.",
+      },
     },
   },
   render: ({ pageSize }) => (
@@ -119,9 +129,58 @@ type Story = StoryObj<typeof meta>
  * Filter with the bar, sort by clicking a heading (A→Z, Z→A, off), and
  * page through. At phone width rows become cards.
  */
-export const Playground: Story = {}
+export const Playground: Story = {
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement)
+    // Below 768px the table is hidden and rows render as cards, so the table
+    // checks only run when it is on screen (a wide canvas).
+    const table = canvas.queryByRole("table", { name: "รายการผู้เช่า" })
+    if (table) {
+      // header row + one page of rows
+      await expect(within(table).getAllByRole("row")).toHaveLength(
+        args.pageSize + 1
+      )
+      // Sort: click a heading → ascending, again → descending.
+      const rentHead = within(table).getByRole("columnheader", {
+        name: /ค่าเช่า/,
+      })
+      await expect(rentHead).toHaveAttribute("aria-sort", "none")
+      await userEvent.click(within(rentHead).getByRole("button"))
+      await expect(rentHead).toHaveAttribute("aria-sort", "ascending")
+      await userEvent.click(within(rentHead).getByRole("button"))
+      await expect(rentHead).toHaveAttribute("aria-sort", "descending")
+    }
+
+    // Filter: only overdue rows remain (in the table and the phone cards).
+    await userEvent.click(canvas.getByRole("button", { name: "ค้างชำระ" }))
+    const statuses = [...canvasElement.querySelectorAll("[data-status]")].map(
+      (el) => el.getAttribute("data-status")
+    )
+    await expect(statuses.length).toBeGreaterThan(0)
+    await expect(new Set(statuses)).toEqual(new Set(["overdue"]))
+  },
+}
+
+/** Paging: the next link moves to page 2. */
+export const Paging: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(canvas.getByRole("link", { name: "1" })).toHaveAttribute(
+      "aria-current",
+      "page"
+    )
+    await userEvent.click(canvas.getByRole("link", { name: "ไปหน้าถัดไป" }))
+    await expect(canvas.getByRole("link", { name: "2" })).toHaveAttribute(
+      "aria-current",
+      "page"
+    )
+  },
+}
 
 export const Empty: Story = {
+  play: async ({ canvasElement }) => {
+    await expect(within(canvasElement).getByText("ยังไม่มีผู้เช่า")).toBeInTheDocument()
+  },
   render: () => (
     <DataTable
       label="รายการผู้เช่า"

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
+import { expect, userEvent, waitFor, within } from "storybook/test"
 import {
   Button,
   Drawer,
@@ -12,8 +13,10 @@ import {
   toast,
 } from "@newnewstyle/ui"
 
+const directions = ["down", "up", "left", "right"] as const
+
 type Args = {
-  swipeDirection: "down" | "up" | "left" | "right"
+  swipeDirection: (typeof directions)[number]
   showSwipeHandle: boolean
 }
 
@@ -24,10 +27,11 @@ const meta = {
   argTypes: {
     swipeDirection: {
       control: "inline-radio",
-      options: ["down", "up", "left", "right"],
+      options: directions,
       description: "ทิศที่ปัดเพื่อปิด (down = แผ่นเลื่อนจากล่าง)",
+      table: { defaultValue: { summary: "down" } },
     },
-    showSwipeHandle: { description: "แถบจับสำหรับปัด" },
+    showSwipeHandle: { control: "boolean", description: "แถบจับสำหรับปัด" },
   },
   render: ({ swipeDirection, showSwipeHandle }) => (
     <Drawer swipeDirection={swipeDirection} showSwipeHandle={showSwipeHandle}>
@@ -65,7 +69,20 @@ type Story = StoryObj<typeof meta>
  * Bottom sheet for phones. Swipe down, press Esc, or tap the backdrop to
  * close. Try it at mobile width.
  */
-export const Playground: Story = {}
+export const Playground: Story = {
+  play: async ({ canvasElement }) => {
+    const trigger = within(canvasElement).getByRole("button", {
+      name: "บันทึกการชำระ",
+    })
+    await userEvent.click(trigger)
+    const dialog = await within(document.body).findByRole("dialog")
+    await expect(dialog).toHaveAccessibleName("บันทึกการชำระ")
+    await userEvent.click(within(dialog).getByRole("button", { name: "ยกเลิก" }))
+    await waitFor(() =>
+      expect(trigger).toHaveAttribute("aria-expanded", "false")
+    )
+  },
+}
 
 /** Side panel: slides in from the right, swipe right to close. */
 export const Right: Story = { args: { swipeDirection: "right" } }

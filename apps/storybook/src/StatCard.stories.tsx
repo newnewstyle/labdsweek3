@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { BellIcon, CircleAlertIcon, TimerIcon } from "lucide-react"
+import { expect, within } from "storybook/test"
 
 import { Money, StatCard } from "@newnewstyle/ui"
 
@@ -18,6 +19,12 @@ const meta = {
     description: { control: "text", description: "บริบทใต้ตัวเลข" },
     value: { control: false, description: "ตัวเลข (มักเป็น <Money>)" },
     icon: { control: false, description: "ไอคอนข้างชื่อ (ตกแต่ง)" },
+    size: {
+      control: "inline-radio",
+      options: ["default", "sm"],
+      description: "ส่งต่อให้ Card ข้างใน",
+    },
+    className: { control: "text" },
   },
   render: (args) => <StatCard {...args} className="max-w-xs" />,
 } satisfies Meta<typeof StatCard>
@@ -25,7 +32,22 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Playground: Story = {}
+export const Playground: Story = {
+  play: async ({ canvasElement }) => {
+    const card = canvasElement.querySelector('[data-slot="stat-card"]')
+    await expect(card).toHaveTextContent("ค้างชำระรวม")
+    await expect(card).toHaveTextContent("฿24,500")
+    await expect(card).toHaveTextContent("3 ราย")
+  },
+}
+
+/** No description or icon: label and number only. */
+export const Minimal: Story = {
+  args: { description: undefined, icon: undefined, value: "12 หลัง", label: "บ้านทั้งหมด" },
+  play: async ({ canvasElement }) => {
+    await expect(within(canvasElement).getByText("12 หลัง")).toBeInTheDocument()
+  },
+}
 
 /** The collection-stats KPI row. */
 export const KpiRow: Story = {

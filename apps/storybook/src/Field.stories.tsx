@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
+import { expect, within } from "storybook/test"
 
 import {
   Button,
@@ -17,35 +18,64 @@ import {
   Switch,
 } from "@newnewstyle/ui"
 
-type Args = { orientation: FieldOrientation; invalid: boolean }
+import { usageDoc } from "./lib/usage-doc"
+import usage from "@ui-docs/components/Field/Field.md?raw"
+import { fieldSpec } from "@ui-docs/components/Field/Field.spec"
+
+const orientations = [
+  "vertical",
+  "horizontal",
+  "responsive",
+] as const satisfies readonly FieldOrientation[]
+
+type Args = { orientation: FieldOrientation; invalid: boolean; disabled: boolean }
 
 const meta = {
   title: "Components/Field",
   tags: ["autodocs"],
-  args: { orientation: "vertical", invalid: false },
+  parameters: {
+    docs: { description: { component: usageDoc(usage, fieldSpec) } },
+  },
+  args: { orientation: "vertical", invalid: false, disabled: false },
   argTypes: {
     orientation: {
       control: "inline-radio",
-      options: ["vertical", "horizontal", "responsive"],
+      options: orientations,
       description:
         "ป้ายอยู่บนช่อง, อยู่ข้างช่อง, หรือเปลี่ยนตามความกว้าง (responsive)",
+      table: { defaultValue: { summary: "vertical" } },
     },
-    invalid: { description: "แสดงข้อความผิดใต้ช่อง" },
+    invalid: {
+      control: "boolean",
+      description:
+        "แสดงข้อความผิดใต้ช่อง: ใส่ `data-invalid` ที่ Field และ `aria-invalid` ที่ช่อง",
+    },
+    disabled: {
+      control: "boolean",
+      description:
+        "ปิดช่อง: `disabled` ที่ช่องกรอก และ `data-disabled` ที่ Field (ป้ายจางลงด้วย)",
+    },
   },
-  render: ({ orientation, invalid }) => (
+  render: ({ orientation, invalid, disabled }) => (
     <FieldGroup className="max-w-md">
-      <Field orientation={orientation} data-invalid={invalid || undefined}>
+      <Field
+        orientation={orientation}
+        data-invalid={invalid || undefined}
+        data-disabled={disabled || undefined}
+      >
         <FieldLabel htmlFor="phone">เบอร์โทรผู้เช่า</FieldLabel>
         <Input
           id="phone"
           inputMode="tel"
           placeholder="081-234-5678"
+          disabled={disabled}
           aria-invalid={invalid || undefined}
+          aria-describedby={invalid ? "phone-error" : "phone-hint"}
         />
         {invalid ? (
-          <FieldError>เบอร์โทรต้องมี 10 หลัก</FieldError>
+          <FieldError id="phone-error">เบอร์โทรต้องมี 10 หลัก</FieldError>
         ) : (
-          <FieldDescription>ใช้ส่ง SMS เตือนค่าเช่า</FieldDescription>
+          <FieldDescription id="phone-hint">ใช้ส่ง SMS เตือนค่าเช่า</FieldDescription>
         )}
       </Field>
     </FieldGroup>
@@ -56,9 +86,52 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /** Label, input, then a hint, or an error that replaces it. */
-export const Playground: Story = {}
+export const Playground: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const input = canvas.getByLabelText("เบอร์โทรผู้เช่า")
+    await expect(input).toHaveAttribute("id", "phone")
+    await expect(input).toHaveAccessibleDescription("ใช้ส่ง SMS เตือนค่าเช่า")
+    await expect(canvas.getByRole("group")).toHaveAttribute("data-slot", "field")
+  },
+}
 
-export const Invalid: Story = { args: { invalid: true } }
+/** The error is a `role="alert"` and the input is marked invalid. */
+export const Invalid: Story = {
+  args: { invalid: true },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(canvas.getByRole("alert")).toHaveTextContent(
+      "เบอร์โทรต้องมี 10 หลัก"
+    )
+    const input = canvas.getByLabelText("เบอร์โทรผู้เช่า")
+    await expect(input).toHaveAttribute("aria-invalid", "true")
+    await expect(input).toHaveAccessibleDescription("เบอร์โทรต้องมี 10 หลัก")
+  },
+}
+
+export const Disabled: Story = {
+  args: { disabled: true },
+  play: async ({ canvasElement }) => {
+    await expect(
+      within(canvasElement).getByLabelText("เบอร์โทรผู้เช่า")
+    ).toBeDisabled()
+  },
+}
+
+/** Each orientation with the same field. */
+export const Orientations: Story = {
+  render: () => (
+    <FieldGroup className="max-w-lg">
+      {orientations.map((orientation) => (
+        <Field key={orientation} orientation={orientation}>
+          <FieldLabel htmlFor={`o-${orientation}`}>{orientation}</FieldLabel>
+          <Input id={`o-${orientation}`} placeholder="081-234-5678" />
+        </Field>
+      ))}
+    </FieldGroup>
+  ),
+}
 
 /** A full form section: legend, grouped fields, separator, settings. */
 export const Form: Story = {
@@ -100,4 +173,11 @@ export const Form: Story = {
       </FieldSet>
     </form>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(canvas.getByRole("group", { name: "ข้อมูลผู้เช่า" })).toBeInTheDocument()
+    await expect(
+      canvas.getByRole("checkbox", { name: "เตือนก่อนครบกำหนด 3 วัน" })
+    ).toBeChecked()
+  },
 }

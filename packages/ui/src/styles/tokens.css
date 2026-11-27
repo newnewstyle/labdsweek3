@@ -38,9 +38,9 @@
      20% hover tint drops to 4.01:1 (fails AA). The value above keeps 4.72:1 and gives
      --destructive-foreground on solid destructive (Button destructive-solid) 6.66:1. */
   --destructive-foreground: oklch(0.985 0 0);
-  /* success / warning text on their 10% tint: 5.11:1 / 5.33:1. On the 20% hover tint (only link
-     badges hover) success is 4.39:1, warning 4.58:1. */
-  --success: oklch(0.49 0.13 150);
+  /* Darkened from my-app-2 (0.49 → 0.47) for WCAG AA on the 20% hover tint of link badges:
+     4.71:1 (was 4.39). On the 10% tint: success 5.52:1, warning 5.33:1; warning on 20%: 4.58:1. */
+  --success: oklch(0.47 0.13 150);
   --warning: oklch(0.5 0.11 70);
   /* Link text (Button variant="link"): 5.05:1 on the background. */
   --link: oklch(0.555 0.163 48.998);

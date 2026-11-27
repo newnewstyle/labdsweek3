@@ -110,7 +110,7 @@ export const badgeSpec = {
     {
       criterion: "1.4.3 Contrast (Minimum)",
       status: "pass",
-      note: "ทุก variant อย่างน้อย 4.5:1 บนพื้น Card ต่ำสุดคือ `destructive` 4.83 (โหมดสว่าง) ค่าของแต่ละ variant อยู่ในส่วนที่ 4",
+      note: "ทุก variant อย่างน้อย 4.5:1 บนพื้น Card ต่ำสุดคือ `default` 4.87 (โหมดสว่าง) และ Badge ลิงก์ตอนชี้เมาส์ `warning` 4.58 คำนวณจากค่า token ค่าของแต่ละ variant อยู่ในส่วนที่ 4",
     },
     {
       criterion: "1.4.1 Use of Color",

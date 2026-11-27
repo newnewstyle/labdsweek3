@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { CircleAlertIcon, InfoIcon } from "lucide-react"
+import { expect, within } from "storybook/test"
 
 import {
   Alert,
@@ -10,6 +11,8 @@ import {
   Button,
 } from "@newnewstyle/ui"
 
+const variants = ["default", "destructive"] as const satisfies readonly AlertVariant[]
+
 type Args = { variant: AlertVariant }
 
 const meta = {
@@ -19,8 +22,10 @@ const meta = {
   argTypes: {
     variant: {
       control: "inline-radio",
-      options: ["default", "destructive"],
-      description: "ปกติ หรือแดงสำหรับเรื่องที่ต้องรีบจัดการ",
+      options: variants,
+      description:
+        "ปกติ หรือแดงสำหรับเรื่องที่ต้องรีบจัดการ Rendered as `data-variant`.",
+      table: { defaultValue: { summary: "default" } },
     },
   },
   render: ({ variant }) => (
@@ -37,7 +42,29 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Playground: Story = {}
+/** `role="alert"`: screen readers announce it as soon as it appears. */
+export const Playground: Story = {
+  play: async ({ args, canvasElement }) => {
+    const alert = within(canvasElement).getByRole("alert")
+    await expect(alert).toHaveAttribute("data-variant", args.variant)
+    await expect(alert).toHaveTextContent("สัญญาเช่า 2 ฉบับจะหมดในเดือนนี้")
+  },
+}
+
+/** Both variants side by side. */
+export const Variants: Story = {
+  render: () => (
+    <div className="flex max-w-md flex-col gap-3">
+      {variants.map((variant) => (
+        <Alert key={variant} variant={variant}>
+          <InfoIcon aria-hidden />
+          <AlertTitle>{variant}</AlertTitle>
+          <AlertDescription>ข้อความอธิบายเพิ่มเติม</AlertDescription>
+        </Alert>
+      ))}
+    </div>
+  ),
+}
 
 export const Destructive: Story = {
   render: () => (
@@ -63,6 +90,12 @@ export const WithAction: Story = {
       </AlertAction>
     </Alert>
   ),
+  play: async ({ canvasElement }) => {
+    const alert = within(canvasElement).getByRole("alert")
+    await expect(
+      within(alert).getByRole("button", { name: "ส่งเตือน" })
+    ).toBeInTheDocument()
+  },
 }
 
 export const TitleOnly: Story = {

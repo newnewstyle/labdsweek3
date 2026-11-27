@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { HouseIcon, PlusIcon, SearchXIcon } from "lucide-react"
+import { expect, within } from "storybook/test"
 
 import {
   Button,
@@ -12,6 +13,8 @@ import {
   EmptyTitle,
 } from "@newnewstyle/ui"
 
+const mediaVariants = ["default", "icon"] as const satisfies readonly EmptyMediaVariant[]
+
 type Args = { mediaVariant: EmptyMediaVariant }
 
 const meta = {
@@ -21,8 +24,9 @@ const meta = {
   argTypes: {
     mediaVariant: {
       control: "inline-radio",
-      options: ["default", "icon"],
-      description: "ไอคอนเปล่า หรือไอคอนในกล่องพื้นเทา",
+      options: mediaVariants,
+      description: "`EmptyMedia variant`: ไอคอนเปล่า หรือไอคอนในกล่องพื้นเทา",
+      table: { defaultValue: { summary: "default" } },
     },
   },
   render: ({ mediaVariant }) => (
@@ -50,7 +54,15 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /** First use: explain, then offer the one action that fills the page. */
-export const Playground: Story = {}
+export const Playground: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(
+      canvas.getByText("ยังไม่มีบ้านเช่า").closest('[data-slot="empty"]')
+    ).toBeInTheDocument()
+    await expect(canvas.getByRole("button", { name: "เพิ่มบ้าน" })).toBeInTheDocument()
+  },
+}
 
 /** No search results: suggest how to widen the search. */
 export const NoResults: Story = {
