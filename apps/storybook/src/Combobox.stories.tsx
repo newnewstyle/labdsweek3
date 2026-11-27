@@ -16,6 +16,8 @@ import {
   useComboboxAnchor,
 } from "@newnewstyle/ui"
 
+import { StateGrid } from "./story-helpers"
+
 const tenants = [
   "สมชาย ใจกว้าง",
   "สมหญิง รักบ้าน",
@@ -79,9 +81,9 @@ type Story = StoryObj<typeof meta>
 export const Playground: Story = {
   play: async ({ canvasElement }) => {
     const input = within(canvasElement).getByRole("combobox", { name: "ผู้เช่า" })
-    // Open with the keyboard and pick the first tenant. (Filtering is checked by
-    // NoMatch: user-event types Thai one code point at a time, which the
-    // per-keystroke list does not always settle on in time.)
+    // Open with the keyboard and pick the first tenant. Base UI's Combobox does
+    // not re-filter on user-event's synthetic typing (real typing does), so
+    // filtering is checked in NoMatch with typeLikeBrowser.
     input.focus()
     await userEvent.keyboard("{ArrowDown}")
     await waitFor(() =>
@@ -175,3 +177,34 @@ function MultipleTenants() {
 
 /** Pick several tenants; each shows as a removable chip. */
 export const Multiple: Story = { render: () => <MultipleTenants /> }
+
+const states = ["rest", "focus-visible", "invalid", "disabled"] as const
+
+/**
+ * The input (an InputGroup) in each state. Focus is forced on the inner input; the group's
+ * `:has(:focus-visible)` rule draws the ring.
+ */
+export const States: Story = {
+  parameters: {
+    layout: "padded",
+    pseudo: { focusVisible: ['[data-pseudo="focus-visible"]'] },
+  },
+  render: () => (
+    <StateGrid
+      rows={states}
+      columns={["input"] as const}
+      renderCell={(state) => (
+        <Combobox items={tenants}>
+          <ComboboxInput
+            aria-label={`ผู้เช่า (${state})`}
+            placeholder="พิมพ์ชื่อเพื่อค้นหา"
+            disabled={state === "disabled"}
+            aria-invalid={state === "invalid" || undefined}
+            data-pseudo={state === "focus-visible" ? state : undefined}
+            className="w-64"
+          />
+        </Combobox>
+      )}
+    />
+  ),
+}

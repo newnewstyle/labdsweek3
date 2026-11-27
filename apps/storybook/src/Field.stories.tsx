@@ -1,3 +1,4 @@
+import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, within } from "storybook/test"
 
@@ -56,31 +57,37 @@ const meta = {
         "ปิดช่อง: `disabled` ที่ช่องกรอก และ `data-disabled` ที่ Field (ป้ายจางลงด้วย)",
     },
   },
-  render: ({ orientation, invalid, disabled }) => (
+  render: (args) => <PhoneField {...args} />,
+} satisfies Meta<Args>
+
+// Ids from useId so the Docs page, which renders several stories at once, has no duplicates.
+function PhoneField({ orientation, invalid, disabled }: Args) {
+  const id = React.useId()
+  return (
     <FieldGroup className="max-w-md">
       <Field
         orientation={orientation}
         data-invalid={invalid || undefined}
         data-disabled={disabled || undefined}
       >
-        <FieldLabel htmlFor="phone">เบอร์โทรผู้เช่า</FieldLabel>
+        <FieldLabel htmlFor={id}>เบอร์โทรผู้เช่า</FieldLabel>
         <Input
-          id="phone"
+          id={id}
           inputMode="tel"
           placeholder="081-234-5678"
           disabled={disabled}
           aria-invalid={invalid || undefined}
-          aria-describedby={invalid ? "phone-error" : "phone-hint"}
+          aria-describedby={invalid ? `${id}-error` : `${id}-hint`}
         />
         {invalid ? (
-          <FieldError id="phone-error">เบอร์โทรต้องมี 10 หลัก</FieldError>
+          <FieldError id={`${id}-error`}>เบอร์โทรต้องมี 10 หลัก</FieldError>
         ) : (
-          <FieldDescription id="phone-hint">ใช้ส่ง SMS เตือนค่าเช่า</FieldDescription>
+          <FieldDescription id={`${id}-hint`}>ใช้ส่ง SMS เตือนค่าเช่า</FieldDescription>
         )}
       </Field>
     </FieldGroup>
-  ),
-} satisfies Meta<Args>
+  )
+}
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -90,7 +97,6 @@ export const Playground: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const input = canvas.getByLabelText("เบอร์โทรผู้เช่า")
-    await expect(input).toHaveAttribute("id", "phone")
     await expect(input).toHaveAccessibleDescription("ใช้ส่ง SMS เตือนค่าเช่า")
     await expect(canvas.getByRole("group")).toHaveAttribute("data-slot", "field")
   },

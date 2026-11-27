@@ -4,6 +4,8 @@ import { expect, userEvent, within } from "storybook/test"
 
 import { FileDropzone, Label } from "@newnewstyle/ui"
 
+import { StateGrid } from "./story-helpers"
+
 type Args = { maxFiles: number; disabled: boolean }
 
 function RepairPhotos({ maxFiles, disabled }: Args) {
@@ -70,4 +72,38 @@ export const Disabled: Story = {
   play: async ({ canvasElement }) => {
     await expect(within(canvasElement).getByLabelText("รูปจุดที่ต้องซ่อม")).toBeDisabled()
   },
+}
+
+const states = ["rest", "hover", "focus-visible", "disabled"] as const
+
+/**
+ * The drop area in each state. Hover is forced on the <label> zone, focus on the hidden input
+ * inside it (the zone's `:has(:focus-visible)` rule draws the ring). The dragging state is
+ * set only by a real drag.
+ */
+export const States: Story = {
+  parameters: {
+    layout: "padded",
+    pseudo: {
+      hover: ['[data-pseudo-zone="hover"] label'],
+      focusVisible: ['[data-pseudo="focus-visible"]'],
+    },
+  },
+  render: () => (
+    <StateGrid
+      rows={states}
+      columns={["zone"] as const}
+      renderCell={(state) => (
+        <div className="w-72" data-pseudo-zone={state === "hover" ? state : undefined}>
+          <FileDropzone
+            aria-label={`รูปจุดที่ต้องซ่อม (${state})`}
+            files={[]}
+            onFilesChange={() => {}}
+            disabled={state === "disabled"}
+            data-pseudo={state === "focus-visible" ? state : undefined}
+          />
+        </div>
+      )}
+    />
+  ),
 }

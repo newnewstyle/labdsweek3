@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { BellIcon, CircleAlertIcon, TimerIcon } from "lucide-react"
 import { expect, within } from "storybook/test"
 
-import { Money, StatCard } from "@newnewstyle/ui"
+import { type CardSize, Money, StatCard } from "@newnewstyle/ui"
 
 const meta = {
   title: "Components/StatCard",
@@ -21,7 +21,7 @@ const meta = {
     icon: { control: false, description: "ไอคอนข้างชื่อ (ตกแต่ง)" },
     size: {
       control: "inline-radio",
-      options: ["default", "sm"],
+      options: ["default", "sm"] as const satisfies readonly CardSize[],
       description: "ส่งต่อให้ Card ข้างใน",
     },
     className: { control: "text" },

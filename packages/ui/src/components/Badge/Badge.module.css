@@ -12,7 +12,8 @@
   /* `[a]:hover:` = hover styles only when the badge is rendered as a link */
 
   .badge[data-variant="default"] {
-    @apply bg-primary text-primary-foreground [a]:hover:bg-primary/80;
+    /* link-badge hover darkens like Button default (see Button.module.css) */
+    @apply bg-primary text-primary-foreground [a]:hover:bg-[color-mix(in_oklch,var(--primary),var(--foreground)_10%)];
   }
 
   .badge[data-variant="secondary"] {
