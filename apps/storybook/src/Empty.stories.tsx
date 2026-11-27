@@ -10,7 +10,7 @@ import {
   EmptyMedia,
   type EmptyMediaVariant,
   EmptyTitle,
-} from "@scope/ui"
+} from "@newnewstyle/ui"
 
 type Args = { mediaVariant: EmptyMediaVariant }
 

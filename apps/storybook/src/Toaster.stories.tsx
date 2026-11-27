@@ -1,4 +1,4 @@
-import { Button, Toaster, toast } from "@scope/ui";
+import { Button, Toaster, toast } from "@newnewstyle/ui";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, within } from "storybook/test";
 

@@ -1,4 +1,4 @@
-import { Badge, type BadgeVariant } from "@scope/ui";
+import { Badge, type BadgeVariant } from "@newnewstyle/ui";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { BadgeCheckIcon, ClockIcon } from "lucide-react";
 import { expect, within } from "storybook/test";

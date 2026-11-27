@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { StarIcon } from "lucide-react"
 
-import { Toggle, type ToggleSize, type ToggleVariant } from "@scope/ui"
+import { Toggle, type ToggleSize, type ToggleVariant } from "@newnewstyle/ui"
 
 type Args = { variant: ToggleVariant; size: ToggleSize; disabled: boolean }
 

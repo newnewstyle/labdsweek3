@@ -9,7 +9,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@scope/ui"
+} from "@newnewstyle/ui"
 
 const meta = {
   title: "Components/Breadcrumb",

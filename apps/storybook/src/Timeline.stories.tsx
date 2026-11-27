@@ -7,7 +7,7 @@ import {
   WrenchIcon,
 } from "lucide-react"
 
-import { Timeline, TimelineItem } from "@scope/ui"
+import { Timeline, TimelineItem } from "@newnewstyle/ui"
 
 const meta = {
   title: "Components/Timeline",

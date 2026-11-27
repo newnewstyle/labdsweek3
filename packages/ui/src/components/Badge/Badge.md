@@ -10,10 +10,10 @@
 
 ## Import and usage (วิธี import และใช้งาน)
 
-1. Import จากแพ็กเกจ `@scope/ui` และไอคอนจาก `lucide-react`
+1. Import จากแพ็กเกจ `@newnewstyle/ui` และไอคอนจาก `lucide-react`
 
    ```tsx
-   import { Badge } from "@scope/ui"
+   import { Badge } from "@newnewstyle/ui"
    import { CircleCheckIcon } from "lucide-react"
    ```
 

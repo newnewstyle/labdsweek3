@@ -38,7 +38,7 @@ importers:
 
   apps/docs:
     dependencies:
-      '@scope/ui':
+      '@newnewstyle/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       lucide-react:
@@ -75,7 +75,7 @@ importers:
 
   apps/storybook:
     dependencies:
-      '@scope/ui':
+      '@newnewstyle/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       lucide-react:

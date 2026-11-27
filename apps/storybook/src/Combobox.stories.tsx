@@ -13,7 +13,7 @@ import {
   ComboboxValue,
   Label,
   useComboboxAnchor,
-} from "@scope/ui"
+} from "@newnewstyle/ui"
 
 const tenants = [
   "สมชาย ใจกว้าง",

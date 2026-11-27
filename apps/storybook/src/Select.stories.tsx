@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   type SelectTriggerSize,
   SelectValue,
-} from "@scope/ui";
+} from "@newnewstyle/ui";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, within } from "storybook/test";
 

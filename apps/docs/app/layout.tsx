@@ -1,10 +1,10 @@
-import { Toaster, TooltipProvider } from "@scope/ui";
+import { Toaster, TooltipProvider } from "@newnewstyle/ui";
 import type { Metadata } from "next";
 import { Geist_Mono, IBM_Plex_Sans_Thai } from "next/font/google";
 
 import "./globals.css";
 
-// Same font setup as the original app: @scope/ui's tokens read these variable names.
+// Same font setup as the original app: @newnewstyle/ui's tokens read these variable names.
 const fontSans = IBM_Plex_Sans_Thai({
   subsets: ["thai", "latin"],
   weight: ["400", "500", "600", "700"],
@@ -17,8 +17,8 @@ const fontMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "@scope/ui",
-  description: "Docs and playground for the @scope/ui design system.",
+  title: "@newnewstyle/ui",
+  description: "Docs and playground for the @newnewstyle/ui design system.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

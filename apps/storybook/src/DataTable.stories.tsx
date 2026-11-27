@@ -7,7 +7,7 @@ import {
   Money,
   StatusBadge,
   type StatusKey,
-} from "@scope/ui"
+} from "@newnewstyle/ui"
 
 type Tenant = {
   id: string

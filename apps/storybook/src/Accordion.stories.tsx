@@ -5,7 +5,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@scope/ui"
+} from "@newnewstyle/ui"
 
 type Args = { multiple: boolean }
 

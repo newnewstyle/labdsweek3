@@ -5,7 +5,7 @@
     "types": ["node"],
     // Usage docs (<Name>.spec.ts, <Name>.md, SETUP.md) live next to each component in the
     // package source. Same alias as `resolve.alias` in .storybook/main.ts. Components themselves
-    // are always imported from the built "@scope/ui".
+    // are always imported from the built "@newnewstyle/ui".
     "paths": { "@ui-docs/*": ["../../packages/ui/src/*"] }
   },
   "include": ["src", ".storybook"]

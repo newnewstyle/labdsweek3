@@ -8,7 +8,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@scope/ui"
+} from "@newnewstyle/ui"
 
 const meta = {
   title: "Components/Pagination",

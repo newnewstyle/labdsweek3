@@ -11,7 +11,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
   Button,
-} from "@scope/ui";
+} from "@newnewstyle/ui";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Trash2Icon } from "lucide-react";
 import { expect, fn, userEvent, within } from "storybook/test";

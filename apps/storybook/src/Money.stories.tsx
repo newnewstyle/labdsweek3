@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
-import { Money, type MoneyDisplay } from "@scope/ui"
+import { Money, type MoneyDisplay } from "@newnewstyle/ui"
 
 type Args = { value: number; display: MoneyDisplay; fractionDigits?: number }
 

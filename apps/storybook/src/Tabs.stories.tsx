@@ -1,4 +1,4 @@
-import { Tabs, TabsContent, TabsList, type TabsListVariant, TabsTrigger } from "@scope/ui";
+import { Tabs, TabsContent, TabsList, type TabsListVariant, TabsTrigger } from "@newnewstyle/ui";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { HomeIcon, SettingsIcon, UserIcon } from "lucide-react";
 import { expect, userEvent, waitFor, within } from "storybook/test";

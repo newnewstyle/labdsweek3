@@ -8,7 +8,7 @@ import {
   PopoverHeader,
   PopoverTitle,
   PopoverTrigger,
-} from "@scope/ui"
+} from "@newnewstyle/ui"
 
 type Args = {
   side: "top" | "bottom" | "left" | "right"

@@ -16,7 +16,7 @@ import {
   ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
-} from "@scope/ui"
+} from "@newnewstyle/ui"
 
 const monthly = [
   { month: "มิ.ย.", collected: 86000, overdue: 8500 },

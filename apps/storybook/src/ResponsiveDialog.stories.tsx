@@ -15,7 +15,7 @@ import {
   ResponsiveDialogTitle,
   ResponsiveDialogTrigger,
   toast,
-} from "@scope/ui"
+} from "@newnewstyle/ui"
 
 function RecordPayment() {
   const [open, setOpen] = React.useState(false)

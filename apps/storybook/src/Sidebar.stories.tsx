@@ -21,7 +21,7 @@ import {
   SidebarRail,
   SidebarSeparator,
   SidebarTrigger,
-} from "@scope/ui";
+} from "@newnewstyle/ui";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { HomeIcon, InboxIcon, SettingsIcon, UsersIcon } from "lucide-react";
 import { expect, userEvent, within } from "storybook/test";

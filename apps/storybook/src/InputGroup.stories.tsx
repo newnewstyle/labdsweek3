@@ -9,7 +9,7 @@ import {
   InputGroupTextarea,
   Label,
   toast,
-} from "@scope/ui"
+} from "@newnewstyle/ui"
 
 type Args = { disabled: boolean; invalid: boolean }
 

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
-import { Progress, ProgressLabel, ProgressValue } from "@scope/ui"
+import { Progress, ProgressLabel, ProgressValue } from "@newnewstyle/ui"
 
 type Args = { value: number }
 

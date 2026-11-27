@@ -1,6 +1,6 @@
 /*
- * @scope/ui design tokens (copied from my-app-2 src/app/globals.css).
- * Shipped as the top of `@scope/ui/styles.css`; the compiled component CSS is appended after it
+ * @newnewstyle/ui design tokens (copied from my-app-2 src/app/globals.css).
+ * Shipped as the top of `@newnewstyle/ui/styles.css`; the compiled component CSS is appended after it
  * at build time. Consumers import it AFTER `@import "tailwindcss";` — this file must not import
  * Tailwind itself.
  */

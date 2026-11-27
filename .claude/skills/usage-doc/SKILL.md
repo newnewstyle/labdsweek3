@@ -18,7 +18,7 @@ Neither file is exported from `src/index.ts` or bundled, and the package publish
 
 `packages/ui/src/components/Button/` is the reference for both files and `apps/storybook/src/Button.stories.tsx` for the stories wiring; `Tabs` shows the same for a component made of several parts. Match their shape and tone.
 
-Component code (`.tsx`, `.module.css`) stays untouched. If the props types still live in `<Name>.tsx`, move them to `<Name>.types.ts` and re-export them from the `.tsx` (as Button does); the public exports from `@scope/ui` must not change.
+Component code (`.tsx`, `.module.css`) stays untouched. If the props types still live in `<Name>.tsx`, move them to `<Name>.types.ts` and re-export them from the `.tsx` (as Button does); the public exports from `@newnewstyle/ui` must not change.
 
 ## 1. Read
 
@@ -40,7 +40,7 @@ Done when you can name every prop and value that exists, every token the CSS rea
 
 **Manual** (`<Name>.md`): `# <Name>`, a one-line intro, the pointer to the spec, then
 
-- **`## Import and usage`**: numbered steps with code. The import line is always from the package, `import { <Name> } from "@scope/ui"` (never a file inside the package), naming every part a caller needs, a minimal usage snippet, and the type import if callers need one. The Docs page always shows this section first, preceded by the shared one-time setup from `packages/ui/src/components/SETUP.md` (do not repeat that setup in the component doc).
+- **`## Import and usage`**: numbered steps with code. The import line is always from the package, `import { <Name> } from "@newnewstyle/ui"` (never a file inside the package), naming every part a caller needs, a minimal usage snippet, and the type import if callers need one. The Docs page always shows this section first, preceded by the shared one-time setup from `packages/ui/src/components/SETUP.md` (do not repeat that setup in the component doc).
 
 then
 

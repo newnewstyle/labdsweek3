@@ -6,7 +6,7 @@ import {
   ToggleGroupItem,
   type ToggleSize,
   type ToggleVariant,
-} from "@scope/ui"
+} from "@newnewstyle/ui"
 
 type Args = {
   variant: ToggleVariant

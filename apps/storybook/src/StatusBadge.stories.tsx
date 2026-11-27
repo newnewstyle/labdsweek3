@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
-import { STATUS, StatusBadge, type StatusKey } from "@scope/ui"
+import { STATUS, StatusBadge, type StatusKey } from "@newnewstyle/ui"
 
 const keys = Object.keys(STATUS) as StatusKey[]
 

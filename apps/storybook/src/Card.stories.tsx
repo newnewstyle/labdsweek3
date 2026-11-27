@@ -11,7 +11,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@scope/ui"
+} from "@newnewstyle/ui"
 
 const meta = {
   title: "Components/Card",

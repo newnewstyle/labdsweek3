@@ -10,10 +10,10 @@
 
 ## Import and usage (วิธี import และใช้งาน)
 
-1. Import จากแพ็กเกจ `@scope/ui` เสมอ (ไม่ import จากไฟล์ภายในแพ็กเกจ)
+1. Import จากแพ็กเกจ `@newnewstyle/ui` เสมอ (ไม่ import จากไฟล์ภายในแพ็กเกจ)
 
    ```tsx
-   import { Button } from "@scope/ui"
+   import { Button } from "@newnewstyle/ui"
    ```
 
 2. ใส่ข้อความเป็นคำกริยา แล้วเลือก `variant` และ `size` ตามกฎใน "When to use" ถ้าไม่ใส่จะได้ `default` ทั้งคู่
@@ -28,7 +28,7 @@
 3. ถ้าต้องใช้ชนิดข้อมูลของ prop (เช่น สร้างรายการ variant) import แบบ type จากที่เดียวกัน
 
    ```tsx
-   import type { ButtonVariant } from "@scope/ui"
+   import type { ButtonVariant } from "@newnewstyle/ui"
    ```
 
 4. ปุ่มที่พาไปหน้าอื่น ทำเป็นลิงก์ ใส่ครบ 3 อย่าง: `render`, `nativeButton={false}` และ `role="link"`

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { BellIcon, CircleAlertIcon, TimerIcon } from "lucide-react"
 
-import { Money, StatCard } from "@scope/ui"
+import { Money, StatCard } from "@newnewstyle/ui"
 
 const meta = {
   title: "Components/StatCard",

@@ -4,9 +4,9 @@ This file guides AI coding agents (Claude Code, Codex, Cursor, etc.) working in 
 
 ## What this is
 
-A public, open-source React design system published to npm as `@scope/ui` (placeholder name —
-replace in `packages/ui/package.json`, its README, imports in `apps/docs`, and this file once the
-real name is chosen). Components were copied from the app `dsdsmoonew/my-app-2` (shadcn "base-nova"
+A public, open-source React design system published to npm as `@newnewstyle/ui` (renamed from the
+placeholder `@scope/ui` on 27 Nov; publishing needs an npm account or org named `newnewstyle`).
+Components were copied from the app `dsdsmoonew/my-app-2` (shadcn "base-nova"
 style on **Base UI**, styled with **CSS Modules**) and must keep that app's props and appearance.
 `ProductCard` and all app pages intentionally stay in the app. `Card` moved into the package on
 25 Nov (it is a generic primitive and `StatCard` builds on it). my-app-2 remains where new
@@ -39,7 +39,7 @@ packages/ui/
   src/styles/reference.css      # build-only @reference target for every *.module.css
   postcss.config.mjs            # Tailwind for compiling the CSS Modules
   tsup.config.ts
-apps/docs/                      # Next.js docs/playground; depends on @scope/ui via workspace:*
+apps/docs/                      # Next.js docs/playground; depends on @newnewstyle/ui via workspace:*
 apps/storybook/                 # Storybook for reviewing each component's props and states
   .storybook/                   # main.ts (addons, Tailwind vite plugin), preview.ts, preview-head.html
   src/<Name>.stories.tsx        # one file per component
@@ -60,16 +60,16 @@ pnpm build                        # ui first, then docs (turbo ^build)
 pnpm lint
 pnpm typecheck
 pnpm test
-pnpm --filter @scope/ui test -- src/components/Button   # single file/folder
-pnpm --filter @scope/ui test -- -t "render prop"        # single test by name
-pnpm --filter @scope/ui test:watch
+pnpm --filter @newnewstyle/ui test -- src/components/Button   # single file/folder
+pnpm --filter @newnewstyle/ui test -- -t "render prop"        # single test by name
+pnpm --filter @newnewstyle/ui test:watch
 cd packages/ui && pnpm pack --dry-run                   # list files that would be published
 pnpm changeset                    # record a version bump for a user-facing change
 ```
 
 `apps/docs` and `apps/storybook` consume the **built** `packages/ui/dist`, not its source. If they
-show stale styles or fail to resolve `@scope/ui`, run `pnpm --filter @scope/ui build`. `pnpm build`
-deletes `dist/` first, so a running dev server briefly logs "Can't resolve '@scope/ui'" — harmless.
+show stale styles or fail to resolve `@newnewstyle/ui`, run `pnpm --filter @newnewstyle/ui build`. `pnpm build`
+deletes `dist/` first, so a running dev server briefly logs "Can't resolve '@newnewstyle/ui'" — harmless.
 
 ## Architecture rules that span multiple files
 
@@ -97,7 +97,7 @@ deletes `dist/` first, so a running dev server briefly logs "Can't resolve '@sco
   class selectors, which would break `dark:` inside `@apply`.
 - **Fonts.** The package cannot load fonts. Tokens read `--font-plex-thai` / `--font-geist-mono`
   (set by `next/font` in the app/docs) and fall back to the system stack.
-- **How styles reach consumers.** Consumers write `@import "tailwindcss"; @import "@scope/ui/styles.css";`.
+- **How styles reach consumers.** Consumers write `@import "tailwindcss"; @import "@newnewstyle/ui/styles.css";`.
   `styles.css` must not import Tailwind itself; it imports `tw-animate-css` and
   `./shadcn-tailwind.css` (both must ship), and its `@source "./"` lets Tailwind scan `dist/`.
   `apps/docs/app/globals.css` mirrors exactly what consumers do; keep it and
@@ -122,7 +122,7 @@ deletes `dist/` first, so a running dev server briefly logs "Can't resolve '@sco
 - **Tests** query by role/label and assert `data-*` attributes rather than class names (CSS Modules
   are not compiled in Vitest). `src/test/setup.ts` polyfills `PointerEvent` (Base UI Checkbox/Switch)
   and `matchMedia` (Sidebar's `useIsMobile`), which jsdom lacks.
-- **Storybook stories** (`apps/storybook/src/<Name>.stories.tsx`) import from `@scope/ui` like a
+- **Storybook stories** (`apps/storybook/src/<Name>.stories.tsx`) import from `@newnewstyle/ui` like a
   consumer; `src/styles.css` mirrors the consumer CSS setup and the theme toolbar sets
   `data-theme` on `<html>`. Because stories use the built JS, prop tables are not inferred —
   declare `argTypes` explicitly, and type option lists with the exported unions
@@ -142,7 +142,7 @@ deletes `dist/` first, so a running dev server briefly logs "Can't resolve '@sco
   from source via the `@ui-docs/*` alias (→ `packages/ui/src/*`, set in `.storybook/main.ts`
   `resolve.alias` and `tsconfig.json` `paths`) and renders them with `src/lib/usage-doc.ts`, after
   the shared setup in `packages/ui/src/components/SETUP.md`. Import lines in docs are always
-  `from "@scope/ui"`. Write new ones with the `/usage-doc` skill (`.claude/skills/usage-doc`).
+  `from "@newnewstyle/ui"`. Write new ones with the `/usage-doc` skill (`.claude/skills/usage-doc`).
 - **Writing `play` functions against Base UI in a real browser** (all learned the hard way):
   - Open Select/DropdownMenu with the keyboard (`trigger.focus(); userEvent.keyboard("{Enter}")`)
     — user-event's synthetic click opens them unreliably, though a real click works.
@@ -178,7 +178,9 @@ deletes `dist/` first, so a running dev server briefly logs "Can't resolve '@sco
 
 ## Publishing (Week 4)
 
-Use Changesets: `pnpm changeset` → `pnpm version-packages` → `pnpm release` (builds `@scope/ui`, then
+Use Changesets: `pnpm changeset` → `pnpm version-packages` → `pnpm release` (builds `@newnewstyle/ui`, then
 `changeset publish`). Do not hand-edit `version` or run `npm publish` directly. `apps/docs` is
-private and ignored by Changesets. Before the first publish: choose the real package name and add a
-`LICENSE` file (package.json declares MIT).
+private and ignored by Changesets. Before the first publish: log in to npm as (or create the org)
+`newnewstyle`, which owns the `@newnewstyle` scope. The MIT
+`LICENSE` is at the repo root with a copy in `packages/ui/` (npm packs only the package folder);
+keep the two identical.

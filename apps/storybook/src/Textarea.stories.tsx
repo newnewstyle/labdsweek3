@@ -1,4 +1,4 @@
-import { Label, Textarea } from "@scope/ui";
+import { Label, Textarea } from "@newnewstyle/ui";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, within } from "storybook/test";
 

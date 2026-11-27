@@ -1,4 +1,4 @@
-# @scope/ui
+# @newnewstyle/ui
 
 React design system built on [Base UI](https://base-ui.com) in the
 [shadcn/ui](https://ui.shadcn.com) style, with Tailwind CSS v4 design tokens.
@@ -6,7 +6,7 @@ React design system built on [Base UI](https://base-ui.com) in the
 ## Install
 
 ```bash
-npm install @scope/ui
+npm install @newnewstyle/ui
 ```
 
 Peer dependencies: `react` and `react-dom` 19, `next-themes` (used by `Toaster`), and Tailwind CSS v4
@@ -18,7 +18,7 @@ In your app's main CSS file, import the stylesheet after Tailwind:
 
 ```css
 @import "tailwindcss";
-@import "@scope/ui/styles.css";
+@import "@newnewstyle/ui/styles.css";
 ```
 
 The stylesheet contains the design tokens and all component styles, and tells Tailwind to scan the
@@ -32,7 +32,7 @@ package, so no extra `@source` is needed.
 ## Usage
 
 ```tsx
-import { Button } from "@scope/ui";
+import { Button } from "@newnewstyle/ui";
 
 export default function Page() {
   return <Button variant="outline">Click me</Button>;

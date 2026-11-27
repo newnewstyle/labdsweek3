@@ -10,7 +10,7 @@
 
 ## Import and usage (วิธี import และใช้งาน)
 
-1. Import ทั้ง 4 ชิ้นส่วนจากแพ็กเกจ `@scope/ui`
+1. Import ทั้ง 4 ชิ้นส่วนจากแพ็กเกจ `@newnewstyle/ui`
 
    ```tsx
    import {
@@ -18,7 +18,7 @@
      TabsContent,
      TabsList,
      TabsTrigger,
-   } from "@scope/ui"
+   } from "@newnewstyle/ui"
    ```
 
 2. ประกอบตามลำดับ: `Tabs` ครอบทั้งหมด → `TabsList` ที่มี `TabsTrigger` → `TabsContent` แต่ละหมวด แท็บกับเนื้อหาจับคู่กันด้วย `value` เดียวกัน และตั้งแท็บเริ่มต้นด้วย `defaultValue`

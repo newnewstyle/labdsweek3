@@ -1,5 +1,5 @@
 ---
-"@scope/ui": minor
+"@newnewstyle/ui": minor
 ---
 
 Port the design-system work from my-app-2 (phase 2).

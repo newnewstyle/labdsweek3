@@ -1,7 +1,7 @@
 import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
-import { FileDropzone, Label } from "@scope/ui"
+import { FileDropzone, Label } from "@newnewstyle/ui"
 
 type Args = { maxFiles: number; disabled: boolean }
 

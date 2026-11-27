@@ -12,7 +12,7 @@ import {
   ButtonGroupSeparator,
   ButtonGroupText,
   Input,
-} from "@scope/ui"
+} from "@newnewstyle/ui"
 
 const meta = {
   title: "Components/ButtonGroup",

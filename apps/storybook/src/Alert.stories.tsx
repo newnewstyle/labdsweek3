@@ -8,7 +8,7 @@ import {
   AlertTitle,
   type AlertVariant,
   Button,
-} from "@scope/ui"
+} from "@newnewstyle/ui"
 
 type Args = { variant: AlertVariant }
 

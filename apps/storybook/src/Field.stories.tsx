@@ -15,7 +15,7 @@ import {
   FieldSet,
   Input,
   Switch,
-} from "@scope/ui"
+} from "@newnewstyle/ui"
 
 type Args = { orientation: FieldOrientation; invalid: boolean }
 

@@ -8,7 +8,7 @@ import {
   FieldTitle,
   RadioGroup,
   RadioGroupItem,
-} from "@scope/ui"
+} from "@newnewstyle/ui"
 
 type Args = { disabled: boolean }
 

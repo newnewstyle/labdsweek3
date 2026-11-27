@@ -52,7 +52,7 @@ import {
   TooltipContent,
   TooltipTrigger,
   toast,
-} from "@scope/ui";
+} from "@newnewstyle/ui";
 
 const fruits = [
   { label: "Apple", value: "apple" },

@@ -1,6 +1,6 @@
 import { ComponentsDemo } from "./demo";
 
-export const metadata = { title: "Components · @scope/ui" };
+export const metadata = { title: "Components · @newnewstyle/ui" };
 
 export default function ComponentsPage() {
   return (

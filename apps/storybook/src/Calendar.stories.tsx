@@ -10,7 +10,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@scope/ui"
+} from "@newnewstyle/ui"
 
 const thaiDate = new Intl.DateTimeFormat("th-TH", { dateStyle: "medium" })
 

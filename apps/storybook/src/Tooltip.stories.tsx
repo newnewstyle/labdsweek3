@@ -1,4 +1,4 @@
-import { Button, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@scope/ui";
+import { Button, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@newnewstyle/ui";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { InfoIcon } from "lucide-react";
 import { expect, userEvent, waitFor, within } from "storybook/test";

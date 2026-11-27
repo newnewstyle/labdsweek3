@@ -56,7 +56,7 @@ import {
   Timeline,
   TimelineItem,
   Toggle,
-} from "@scope/ui";
+} from "@newnewstyle/ui";
 
 const variants = [
   "default",
@@ -158,7 +158,7 @@ function Showcase() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>ยืนยันการบันทึก</DialogTitle>
-              <DialogDescription>ตัวอย่าง Dialog จาก @scope/ui</DialogDescription>
+              <DialogDescription>ตัวอย่าง Dialog จาก @newnewstyle/ui</DialogDescription>
             </DialogHeader>
             <DialogFooter>
               <DialogClose render={<Button variant="outline" />}>ยกเลิก</DialogClose>
@@ -239,11 +239,11 @@ function Showcase() {
   );
 }
 
-// Server Component on purpose: verifies @scope/ui (a "use client" bundle) renders under the App Router.
+// Server Component on purpose: verifies @newnewstyle/ui (a "use client" bundle) renders under the App Router.
 export default function Home() {
   return (
     <main className="mx-auto flex max-w-4xl flex-col gap-10 p-8">
-      <h1 className="text-3xl">@scope/ui</h1>
+      <h1 className="text-3xl">@newnewstyle/ui</h1>
       <Showcase />
       <Separator />
       <div data-theme="dark" className="rounded-xl bg-background p-8 text-foreground">

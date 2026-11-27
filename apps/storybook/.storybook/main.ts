@@ -15,8 +15,9 @@ const config: StorybookConfig = {
   ],
   framework: { name: "@storybook/react-vite", options: {} },
   core: { disableTelemetry: true },
-  // Stories import the BUILT @scope/ui (like a real consumer). Tailwind compiles src/styles.css,
-  // which pulls in @scope/ui/styles.css (tokens + compiled component CSS).
+  // Stories import the BUILT @newnewstyle/ui (like a real consumer). Tailwind compiles
+  // src/styles.css,
+  // which pulls in @newnewstyle/ui/styles.css (tokens + compiled component CSS).
   // `@ui-docs/*` reads the usage docs (<Name>.spec.ts / <Name>.md / SETUP.md) from the package
   // source for the Docs page; keep in sync with `paths` in tsconfig.json.
   viteFinal: (viteConfig) =>

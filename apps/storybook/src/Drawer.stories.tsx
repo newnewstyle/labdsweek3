@@ -10,7 +10,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
   toast,
-} from "@scope/ui"
+} from "@newnewstyle/ui"
 
 type Args = {
   swipeDirection: "down" | "up" | "left" | "right"
