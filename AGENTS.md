@@ -30,7 +30,7 @@ pinned in the root `packageManager` field.
 packages/ui/
   src/index.ts                  # public API: only what is exported here is public
   src/components/<Name>/        # <Name>.tsx, <Name>.module.css, index.ts (+ <Name>.types.ts, tests)
-                                # + usage docs <Name>.spec.ts / <Name>.md (Badge, Button, Dialog,
+                                # + usage docs <Name>.spec.ts / <Name>.md (AlertDialog, Badge, Button, Dialog,
                                 #   Field, Input, StatusBadge, Tabs)
   src/components/SETUP.md       # one-time consumer setup shown above every usage doc
   src/lib/component-spec.ts     # ComponentSpec type for <Name>.spec.ts (not exported)

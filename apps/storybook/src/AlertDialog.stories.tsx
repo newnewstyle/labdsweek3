@@ -16,7 +16,10 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Trash2Icon } from "lucide-react";
 import { expect, fn, userEvent, within } from "storybook/test";
 
+import { usageDoc } from "./lib/usage-doc";
 import { openOverlayStory } from "./story-helpers";
+import usage from "@ui-docs/components/AlertDialog/AlertDialog.md?raw";
+import { alertDialogSpec } from "@ui-docs/components/AlertDialog/AlertDialog.spec";
 
 const sizes = ["default", "sm"] as const satisfies readonly AlertDialogSize[];
 
@@ -43,7 +46,7 @@ function ExampleAlertDialog({ size, withMedia, defaultOpen, onConfirm }: AlertDi
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>ยกเลิก</AlertDialogCancel>
-          <AlertDialogAction variant="destructive" onClick={onConfirm}>
+          <AlertDialogAction variant="destructive-solid" onClick={onConfirm}>
             ลบ
           </AlertDialogAction>
         </AlertDialogFooter>
@@ -55,6 +58,10 @@ function ExampleAlertDialog({ size, withMedia, defaultOpen, onConfirm }: AlertDi
 const meta = {
   title: "Components/AlertDialog",
   component: ExampleAlertDialog,
+  tags: ["autodocs"],
+  parameters: {
+    docs: { description: { component: usageDoc(usage, alertDialogSpec) } },
+  },
   args: { size: "default", withMedia: false, defaultOpen: false, onConfirm: fn() },
   argTypes: {
     size: {
@@ -87,11 +94,50 @@ export const CancelAndConfirm: Story = {
     const trigger = within(canvasElement).getByRole("button", { name: "ลบรายการ" });
 
     await userEvent.click(trigger);
-    await userEvent.click(await body.findByRole("button", { name: "ยกเลิก" }));
+    const cancel = await body.findByRole("button", { name: "ยกเลิก" });
+    // focus starts on Cancel, so a stray Enter never confirms
+    await expect(cancel).toHaveFocus();
+    await expect(body.getByRole("button", { name: "ลบ" })).toHaveAttribute(
+      "data-variant",
+      "destructive-solid",
+    );
+    await userEvent.click(cancel);
     await expect(args.onConfirm).not.toHaveBeenCalled();
 
     await userEvent.click(trigger);
     await userEvent.click(await body.findByRole("button", { name: "ลบ" }));
     await expect(args.onConfirm).toHaveBeenCalledOnce();
+  },
+};
+
+/** A confirmation that is not a delete: the action keeps the default (primary) colour. */
+export const ConfirmSignOut: Story = {
+  render: () => (
+    <AlertDialog>
+      <AlertDialogTrigger render={<Button variant="outline" />}>ออกจากระบบ</AlertDialogTrigger>
+      <AlertDialogContent size="sm">
+        <AlertDialogHeader>
+          <AlertDialogTitle>ออกจากระบบ?</AlertDialogTitle>
+          <AlertDialogDescription>คุณต้องเข้าสู่ระบบใหม่ในครั้งถัดไป</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>ยกเลิก</AlertDialogCancel>
+          <AlertDialogAction>ออกจากระบบ</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  ),
+  play: async ({ canvasElement }) => {
+    const body = within(document.body);
+    await userEvent.click(within(canvasElement).getByRole("button", { name: "ออกจากระบบ" }));
+    const dialog = await body.findByRole("alertdialog", { name: "ออกจากระบบ?" });
+    await expect(within(dialog).getByRole("button", { name: "ออกจากระบบ" })).toHaveAttribute(
+      "data-variant",
+      "default",
+    );
+    await userEvent.keyboard("{Escape}");
+    await expect(
+      within(canvasElement).getByRole("button", { name: "ออกจากระบบ" }),
+    ).toHaveAttribute("aria-expanded", "false");
   },
 };
