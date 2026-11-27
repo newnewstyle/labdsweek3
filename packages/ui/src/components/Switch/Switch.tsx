@@ -3,13 +3,16 @@
 import { Switch as SwitchPrimitive } from "@base-ui/react/switch"
 import { cn } from "cn"
 
+import { useFieldControlProps } from "../Field/field-context"
+
 import styles from "./Switch.module.css"
 
 type SwitchSize = "sm" | "default"
 
 type SwitchProps = SwitchPrimitive.Root.Props & { size?: SwitchSize }
 
-function Switch({ className, size = "default", ...props }: SwitchProps) {
+function Switch({ className, size = "default", ...rest }: SwitchProps) {
+  const props = useFieldControlProps(rest)
   return (
     <SwitchPrimitive.Root
       data-slot="switch"

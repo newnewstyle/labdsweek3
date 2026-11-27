@@ -122,6 +122,18 @@ deletes `dist/` first, so a running dev server briefly logs "Can't resolve '@new
   (`app/page.tsx` is a Server Component: only demos without function props), add a story,
   add a changeset.
   Removing or renaming a public export is a major bump.
+- **Field wiring.** `Field` provides an internal context (`Field/field-context.ts`, not exported):
+  `FieldLabel` defaults `htmlFor`, `FieldDescription`/`FieldError` register their ids while shown,
+  and the package controls (Input, Textarea, Checkbox, Switch, SelectTrigger, and InputGroup /
+  Combobox inputs built on them) call `useFieldControlProps` to default `id`, `aria-describedby`
+  and `aria-invalid` (from `data-invalid` on Field). Explicit props win. With several controls in
+  one Field only the first to mount keeps the id (the others drop it after mount, via
+  `claimControl`). ComboboxInput passes the Field id to the Base UI primitive, whose own id would
+  otherwise win. RadioGroup is a group, not a labelable control: it calls `useFieldGroupProps`
+  (`aria-labelledby` → the FieldLabel ids, which FieldLabel registers as kind `label`, plus
+  describedby/invalid) and resets the context to `null` for its children, so each option is wired
+  only by its own option Field or choice card. A new form control should call
+  `useFieldControlProps` (or `useFieldGroupProps` for a group).
 - **`toast`** is re-exported from `sonner` (`src/components/Sonner/index.ts`) so consumers use the
   same sonner instance as `Toaster` without installing it themselves.
 - **Tests** query by role/label and assert `data-*` attributes rather than class names (CSS Modules
@@ -164,6 +176,9 @@ deletes `dist/` first, so a running dev server briefly logs "Can't resolve '@new
     Storybook canvas.
   - Storybook's `phase === "finished"` does not mean the play passed; check the
     `storyFinished` event's `status`.
+  - Arrow-key navigation (RadioGroup roving focus) is not asserted in plays: while the Storybook
+    window is unfocused, `userEvent.keyboard` does not move focus and Base UI selects only on a
+    real focus event. Check it by hand or in a focused browser.
   - The preview has no global `<Toaster />`: a story that asserts a toast renders its own.
   - Below 768px DataTable shows cards instead of the table and ResponsiveDialog renders a
     Drawer; plays check `matchMedia("(min-width: 768px)")` or query both forms.
