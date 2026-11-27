@@ -5,6 +5,12 @@ import { cn } from "cn"
 
 import { Label } from "../Label"
 import { Separator } from "../Separator"
+import {
+  FieldContext,
+  useFieldContext,
+  useFieldMessage,
+  useFieldState,
+} from "./field-context"
 
 import styles from "./Field.module.css"
 
@@ -49,15 +55,25 @@ function FieldGroup({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+/**
+ * One form field. Links its FieldLabel, FieldDescription and FieldError to the package control
+ * inside it (Input, Textarea, Checkbox, Switch, SelectTrigger, InputGroup/Combobox inputs):
+ * the control gets an id, aria-describedby and, with `data-invalid`, aria-invalid.
+ * One control per Field; props passed explicitly always win.
+ */
 function Field({ className, orientation = "vertical", ...props }: FieldProps) {
+  const dataInvalid = (props as Record<string, unknown>)["data-invalid"]
+  const field = useFieldState(dataInvalid === true || dataInvalid === "true" || dataInvalid === "")
   return (
-    <div
-      role="group"
-      data-slot="field"
-      data-orientation={orientation}
-      className={cn(styles.field, className)}
-      {...props}
-    />
+    <FieldContext.Provider value={field}>
+      <div
+        role="group"
+        data-slot="field"
+        data-orientation={orientation}
+        className={cn(styles.field, className)}
+        {...props}
+      />
+    </FieldContext.Provider>
   )
 }
 
@@ -73,12 +89,19 @@ function FieldContent({ className, ...props }: React.ComponentProps<"div">) {
 
 function FieldLabel({
   className,
+  htmlFor,
+  id,
   ...props
 }: React.ComponentProps<typeof Label>) {
+  const field = useFieldContext()
+  // registered so a group control (RadioGroup) can point aria-labelledby at it
+  const labelId = useFieldMessage("label", id)
   return (
     <Label
       data-slot="field-label"
       className={cn(styles.label, className)}
+      htmlFor={htmlFor ?? field?.controlId}
+      id={labelId}
       {...props}
     />
   )
@@ -94,10 +117,16 @@ function FieldTitle({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
-function FieldDescription({ className, ...props }: React.ComponentProps<"p">) {
+function FieldDescription({
+  className,
+  id,
+  ...props
+}: React.ComponentProps<"p">) {
+  const messageId = useFieldMessage("description", id)
   return (
     <p
       data-slot="field-description"
+      id={messageId}
       className={cn(styles.description, className)}
       {...props}
     />
@@ -133,6 +162,7 @@ function FieldError({
   className,
   children,
   errors,
+  id,
   ...props
 }: React.ComponentProps<"div"> & {
   errors?: Array<{ message?: string } | undefined>
@@ -156,12 +186,15 @@ function FieldError({
     )
   }, [children, errors])
 
+  const messageId = useFieldMessage("error", id, !!content)
+
   if (!content) return null
 
   return (
     <div
       role="alert"
       data-slot="field-error"
+      id={messageId}
       className={cn(styles.error, className)}
       {...props}
     >

@@ -69,8 +69,8 @@ export const fieldSpec = {
       why: "ใต้ช่องมีข้อความเดียว ผู้ใช้จึงเห็นสิ่งที่ต้องแก้ทันที และความสูงของฟอร์มไม่กระโดด",
     },
     {
-      rule: "ช่องที่ผิดต้องใส่ 2 ที่: `data-invalid` ที่ `Field` และ `aria-invalid` ที่ช่องกรอก",
-      why: "`data-invalid` ทำให้ป้ายเป็นสีแดง `aria-invalid` ทำให้ขอบช่องแดงและโปรแกรมอ่านหน้าจอรู้ว่าช่องนี้ผิด ใส่อย่างเดียวจะได้ครึ่งเดียว",
+      rule: "Field ผูกป้าย คำอธิบาย และข้อความผิดกับช่องกรอกให้เอง (`id`, `aria-describedby`, `aria-invalid` จาก `data-invalid`)",
+      why: "ถ้าให้คนใช้ใส่ id เองทุกช่อง ลืมเมื่อไหร่โปรแกรมอ่านหน้าจอก็ไม่อ่านคำอธิบายหรือข้อความผิด my-app-2 แก้เรื่องนี้ด้วย `FormField` ของตัวเอง แพ็กเกจจึงต้องทำได้เท่ากัน ค่าที่ใส่เองยังชนะ",
     },
     {
       rule: "`FieldError` เป็น `role=\"alert\"` และไม่แสดงอะไรเมื่อไม่มีข้อความ",
@@ -81,13 +81,13 @@ export const fieldSpec = {
   accessibility: [
     {
       criterion: "1.3.1 Info and Relationships",
-      status: "conditional",
-      note: "`FieldLabel` ต้องมี `htmlFor` ตรงกับ `id` ของช่องกรอก และคำอธิบาย/ข้อความผิดไม่ได้ผูกกับช่องให้อัตโนมัติ ต้องใส่ `id` ที่ `FieldDescription`/`FieldError` แล้วใส่ `aria-describedby` ที่ช่องกรอกเอง",
+      status: "pass",
+      note: "ช่องกรอกของแพ็กเกจใน Field ได้ชื่อจาก `FieldLabel` และคำอธิบายจาก `FieldDescription`/`FieldError` อัตโนมัติ (ทดสอบใน `Field.test.tsx` และ story `Playground`/`Invalid`) RadioGroup ได้ชื่อกลุ่มผ่าน `aria-labelledby` (story `RadioGroup/Invalid`) ยกเว้นช่องที่ไม่ใช่ของแพ็กเกจ ซึ่งต้องผูกเอง",
     },
     {
       criterion: "3.3.1 Error Identification",
       status: "conditional",
-      note: "ผ่านเมื่อใช้ `FieldError` (มี `role=\"alert\"`) คู่กับ `aria-invalid` ที่ช่อง ข้อความต้องบอกว่าผิดอะไรและแก้อย่างไร เช่น \"เบอร์โทรต้องมี 10 หลัก\"",
+      note: "ผ่านเมื่อใส่ `data-invalid` ที่ Field และใช้ `FieldError` (มี `role=\"alert\"` ช่องได้ `aria-invalid` เอง) ข้อความต้องบอกว่าผิดอะไรและแก้อย่างไร เช่น \"เบอร์โทรต้องมี 10 หลัก\"",
     },
     {
       criterion: "1.4.3 Contrast (Minimum)",
@@ -106,7 +106,5 @@ export const fieldSpec = {
     },
   ],
 
-  todos: [
-    "ควรให้ `Field` ผูก `aria-describedby` ให้อัตโนมัติไหม (เช่นผ่าน context) ตอนนี้ต้องใส่ `id` เองทุกช่อง my-app-2 ใช้ `FormField` ของตัวเองที่ผูกให้แล้ว ถ้าย้ายมาใช้ Field จะเสียส่วนนี้",
-  ],
+  todos: [],
 } satisfies ComponentSpec

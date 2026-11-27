@@ -1,4 +1,3 @@
-import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, within } from "storybook/test"
 
@@ -49,7 +48,7 @@ const meta = {
     invalid: {
       control: "boolean",
       description:
-        "แสดงข้อความผิดใต้ช่อง: ใส่ `data-invalid` ที่ Field และ `aria-invalid` ที่ช่อง",
+        "แสดงข้อความผิดใต้ช่อง: ใส่ `data-invalid` ที่ Field แล้วช่องได้ `aria-invalid` เอง",
     },
     disabled: {
       control: "boolean",
@@ -57,37 +56,26 @@ const meta = {
         "ปิดช่อง: `disabled` ที่ช่องกรอก และ `data-disabled` ที่ Field (ป้ายจางลงด้วย)",
     },
   },
-  render: (args) => <PhoneField {...args} />,
-} satisfies Meta<Args>
-
-// Ids from useId so the Docs page, which renders several stories at once, has no duplicates.
-function PhoneField({ orientation, invalid, disabled }: Args) {
-  const id = React.useId()
-  return (
+  // No ids: Field links the label, hint and error to the Input itself (and every rendered
+  // story gets its own ids, so the Docs page has no duplicates).
+  render: ({ orientation, invalid, disabled }) => (
     <FieldGroup className="max-w-md">
       <Field
         orientation={orientation}
         data-invalid={invalid || undefined}
         data-disabled={disabled || undefined}
       >
-        <FieldLabel htmlFor={id}>เบอร์โทรผู้เช่า</FieldLabel>
-        <Input
-          id={id}
-          inputMode="tel"
-          placeholder="081-234-5678"
-          disabled={disabled}
-          aria-invalid={invalid || undefined}
-          aria-describedby={invalid ? `${id}-error` : `${id}-hint`}
-        />
+        <FieldLabel>เบอร์โทรผู้เช่า</FieldLabel>
+        <Input inputMode="tel" placeholder="081-234-5678" disabled={disabled} />
         {invalid ? (
-          <FieldError id={`${id}-error`}>เบอร์โทรต้องมี 10 หลัก</FieldError>
+          <FieldError>เบอร์โทรต้องมี 10 หลัก</FieldError>
         ) : (
-          <FieldDescription id={`${id}-hint`}>ใช้ส่ง SMS เตือนค่าเช่า</FieldDescription>
+          <FieldDescription>ใช้ส่ง SMS เตือนค่าเช่า</FieldDescription>
         )}
       </Field>
     </FieldGroup>
-  )
-}
+  ),
+} satisfies Meta<Args>
 
 export default meta
 type Story = StoryObj<typeof meta>

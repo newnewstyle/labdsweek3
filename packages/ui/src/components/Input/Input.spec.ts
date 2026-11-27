@@ -76,7 +76,7 @@ export const inputSpec = {
     {
       criterion: "1.3.1 Info and Relationships / 4.1.2 Name, Role, Value",
       status: "conditional",
-      note: "ต้องมีป้าย: `FieldLabel`/`Label` ที่ `htmlFor` ตรงกับ `id` หรือ `aria-label` ถ้าไม่มีป้ายที่มองเห็น",
+      note: "ต้องมีป้าย: `FieldLabel` ใน `Field` (ผูกให้เอง) หรือ `Label` ที่ `htmlFor` ตรงกับ `id` หรือ `aria-label` ถ้าไม่มีป้ายที่มองเห็น",
     },
     {
       criterion: "1.4.3 Contrast (Minimum)",
@@ -96,7 +96,7 @@ export const inputSpec = {
     {
       criterion: "3.3.1 Error Identification",
       status: "conditional",
-      note: "`aria-invalid` ทำให้ขอบแดง แต่ต้องมีข้อความผิดใต้ช่อง (`FieldError`) และผูกด้วย `aria-describedby` เอง",
+      note: "ใน `Field` ที่มี `data-invalid` ช่องได้ `aria-invalid` (ขอบแดง) และ `aria-describedby` ไปที่ `FieldError` เอง นอก Field ต้องใส่ทั้งสองเอง",
     },
   ],
 

@@ -23,7 +23,7 @@
    <Input id="email" type="email" autoComplete="email" placeholder="name@example.com" />
    ```
 
-3. ในฟอร์ม ใช้คู่กับ `Field` (ป้าย คำอธิบาย ข้อความผิด) ดูเอกสาร Field
+3. ในฟอร์ม ใช้ใน `Field` แทน: ไม่ต้องใส่ `id` / `htmlFor` เพราะ Field ผูกป้าย คำอธิบาย และข้อความผิดให้เอง ดูเอกสาร Field
 
 ---
 

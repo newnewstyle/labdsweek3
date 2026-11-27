@@ -12,6 +12,7 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "../InputGroup"
+import { useFieldControlProps } from "../Field/field-context"
 
 import styles from "./Combobox.module.css"
 
@@ -65,11 +66,14 @@ function ComboboxInput({
   showClear = false,
   ...props
 }: ComboboxInputProps) {
+  // Base UI gives the input its own id, which beats the one InputGroupInput reads from Field;
+  // pass the Field's id and aria to the primitive so FieldLabel points at this input.
+  const fieldProps = useFieldControlProps(props)
   return (
     <InputGroup className={cn(styles.inputGroup, className)}>
       <ComboboxPrimitive.Input
         render={<InputGroupInput disabled={disabled} />}
-        {...props}
+        {...fieldProps}
       />
       <InputGroupAddon align="inline-end">
         {showTrigger && (

@@ -22,23 +22,23 @@
    } from "@newnewstyle/ui"
    ```
 
-2. ช่องเดียว: ป้าย → ช่อง → คำอธิบาย ผูกป้ายด้วย `htmlFor` และผูกคำอธิบายด้วย `aria-describedby`
+2. ช่องเดียว: ป้าย → ช่อง → คำอธิบาย ไม่ต้องใส่ `id`, `htmlFor` หรือ `aria-describedby` Field ผูกให้เอง
 
    ```tsx
    <Field>
-     <FieldLabel htmlFor="phone">เบอร์โทรผู้เช่า</FieldLabel>
-     <Input id="phone" inputMode="tel" aria-describedby="phone-hint" />
-     <FieldDescription id="phone-hint">ใช้ส่ง SMS เตือนค่าเช่า</FieldDescription>
+     <FieldLabel>เบอร์โทรผู้เช่า</FieldLabel>
+     <Input inputMode="tel" />
+     <FieldDescription>ใช้ส่ง SMS เตือนค่าเช่า</FieldDescription>
    </Field>
    ```
 
-3. ตอนกรอกผิด ใส่ `data-invalid` ที่ Field, `aria-invalid` ที่ช่อง และแทนคำอธิบายด้วย `FieldError`
+3. ตอนกรอกผิด ใส่ `data-invalid` ที่ Field แล้วแทนคำอธิบายด้วย `FieldError` ช่องได้ `aria-invalid` เอง
 
    ```tsx
    <Field data-invalid>
-     <FieldLabel htmlFor="phone">เบอร์โทรผู้เช่า</FieldLabel>
-     <Input id="phone" aria-invalid aria-describedby="phone-error" />
-     <FieldError id="phone-error">เบอร์โทรต้องมี 10 หลัก</FieldError>
+     <FieldLabel>เบอร์โทรผู้เช่า</FieldLabel>
+     <Input inputMode="tel" />
+     <FieldError>เบอร์โทรต้องมี 10 หลัก</FieldError>
    </Field>
    ```
 
@@ -53,7 +53,7 @@
 | ชิ้นส่วน           | ใช้ทำอะไร                                                                 |
 | ------------------ | ------------------------------------------------------------------------- |
 | `Field`            | ครอบช่องหนึ่งช่อง (`role="group"`)                                       |
-| `FieldLabel`       | ป้ายของช่อง ใส่ `htmlFor` ถ้าห่อ `Field` ทั้งก้อนจะกลายเป็นการ์ดตัวเลือก |
+| `FieldLabel`       | ป้ายของช่อง ใน Field ชี้ไปที่ช่องเอง (ใส่ `htmlFor` เมื่ออยู่นอก Field) ถ้าห่อ `Field` ทั้งก้อนจะกลายเป็นการ์ดตัวเลือก |
 | `FieldContent`     | ห่อป้าย + คำอธิบาย เมื่อวางข้างสวิตช์หรือ checkbox                       |
 | `FieldTitle`       | หัวข้อในการ์ดตัวเลือก                                                     |
 | `FieldDescription` | คำอธิบายใต้ช่อง ตัวเทา                                                    |
@@ -70,11 +70,27 @@
 | `horizontal` | ป้ายอยู่ข้างตัวควบคุม (สวิตช์, checkbox, ปุ่ม)                 |
 | `responsive` | ซ้อนกันเมื่อ `FieldGroup` แคบ วางข้างกันเมื่อกว้างตั้งแต่ 28rem |
 
+**Field ผูกให้เอง** ช่องกรอกของแพ็กเกจที่อยู่ใน Field (`Input`, `Textarea`, `Checkbox`, `Switch`, `SelectTrigger`, ช่องใน `InputGroup` และ `Combobox`) ได้ `id` ที่ `FieldLabel` ชี้ไป, `aria-describedby` ชี้ไปที่คำอธิบายและข้อความผิดที่แสดงอยู่ (คำอธิบายก่อน) และ `aria-invalid` เมื่อ Field มี `data-invalid` ถ้าใส่ค่าเหล่านี้เอง ค่าที่ใส่ชนะ ถ้า Field มีหลายช่อง (เช่นวันเริ่ม–สิ้นสุด) ป้ายชี้ไปที่ช่องแรก ช่องที่เหลือได้คำอธิบายและ `aria-invalid` เหมือนกันแต่ไม่ได้ id ที่ซ้ำ ใส่ `aria-label` ให้ช่องเหล่านั้นเอง
+
+**RadioGroup ใน Field** ตัวกลุ่มได้ชื่อจาก `FieldLabel` (ผ่าน `aria-labelledby` เพราะกลุ่มไม่ใช่ช่องกรอก) และได้คำอธิบายกับ `aria-invalid` จาก Field ส่วนแต่ละตัวเลือกห่อด้วย `Field` ของตัวเอง (หรือการ์ดตัวเลือก) แล้ว `RadioGroupItem` ผูกกับป้ายและคำอธิบายของตัวเลือกนั้นเอง ไม่ต้องใส่ id
+
+```tsx
+<Field data-invalid>
+  <FieldLabel>ช่องทางส่งเตือน</FieldLabel>
+  <RadioGroup>
+    <Field orientation="horizontal">
+      <RadioGroupItem value="line" />
+      <FieldLabel>LINE</FieldLabel>
+    </Field>
+  </RadioGroup>
+  <FieldError>เลือกช่องทางส่งเตือน</FieldError>
+</Field>
+```
+
 **สิ่งที่ต้องใส่เองตอนใช้**
 
-- `data-invalid` ที่ `Field` ตอนผิด: ป้ายเป็นสีแดง
+- `data-invalid` ที่ `Field` ตอนผิด: ป้ายเป็นสีแดง ช่องขอบแดง
 - `data-disabled` ที่ `Field` ตอนปิดช่อง: ป้ายจางลง (ใส่ `disabled` ที่ช่องด้วย)
-- `id` ที่คำอธิบาย/ข้อความผิด และ `aria-describedby` ที่ช่อง
 
 ---
 
@@ -99,8 +115,8 @@ contrast (สว่าง / มืด บนพื้นหลัง คำน�
 
 ```tsx
 <Field data-invalid>
-  <FieldLabel htmlFor="phone">เบอร์โทรผู้เช่า</FieldLabel>
-  <Input id="phone" inputMode="tel" placeholder="081-234-5678" aria-invalid />
+  <FieldLabel>เบอร์โทรผู้เช่า</FieldLabel>
+  <Input inputMode="tel" placeholder="081-234-5678" />
   <FieldError>เบอร์โทรต้องมี 10 หลัก</FieldError>
 </Field>
 ```

@@ -5,6 +5,7 @@ import {
   Field,
   FieldContent,
   FieldDescription,
+  FieldError,
   FieldLabel,
   FieldTitle,
   RadioGroup,
@@ -42,8 +43,8 @@ const meta = {
     >
       {channels.map((c) => (
         <Field key={c.value} orientation="horizontal">
-          <RadioGroupItem value={c.value} id={`ch-${c.value}`} />
-          <FieldLabel htmlFor={`ch-${c.value}`}>{c.label}</FieldLabel>
+          <RadioGroupItem value={c.value} />
+          <FieldLabel>{c.label}</FieldLabel>
         </Field>
       ))}
     </RadioGroup>
@@ -53,7 +54,10 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-/** Pick one reminder channel. Arrow keys move the selection. */
+/**
+ * Pick one reminder channel. Arrow keys move the selection (Base UI roving focus; not asserted
+ * here, see AGENTS.md).
+ */
 export const Playground: Story = {
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement)
@@ -66,12 +70,6 @@ export const Playground: Story = {
     await expect(args.onValueChange).toHaveBeenLastCalledWith(
       "sms",
       expect.anything()
-    )
-    sms.focus()
-    await userEvent.keyboard("{ArrowDown}")
-    await expect(canvas.getByRole("radio", { name: "อีเมล" })).toHaveAttribute(
-      "aria-checked",
-      "true"
     )
   },
 }
@@ -86,7 +84,41 @@ export const Disabled: Story = {
   },
 }
 
-/** FieldLabel wrapping a Field turns each option into a choice card. */
+/**
+ * A RadioGroup inside a Field: the FieldLabel names the group (aria-labelledby) and the
+ * FieldError describes it; each option is wired by its own Field. No ids needed.
+ */
+export const Invalid: Story = {
+  render: () => (
+    <Field data-invalid className="max-w-xs">
+      <FieldLabel>ช่องทางส่งเตือน</FieldLabel>
+      <RadioGroup>
+        {channels.map((c) => (
+          <Field key={c.value} orientation="horizontal">
+            <RadioGroupItem value={c.value} />
+            <FieldLabel>{c.label}</FieldLabel>
+          </Field>
+        ))}
+      </RadioGroup>
+      <FieldError>เลือกช่องทางส่งเตือนอย่างน้อยหนึ่งช่องทาง</FieldError>
+    </Field>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const group = canvas.getByRole("radiogroup", { name: "ช่องทางส่งเตือน" })
+    await expect(group).toHaveAttribute("aria-invalid", "true")
+    await expect(group).toHaveAccessibleDescription(
+      "เลือกช่องทางส่งเตือนอย่างน้อยหนึ่งช่องทาง"
+    )
+    await userEvent.click(canvas.getByRole("radio", { name: "SMS" }))
+    await expect(canvas.getByRole("radio", { name: "SMS" })).toHaveAttribute(
+      "aria-checked",
+      "true"
+    )
+  },
+}
+
+/** FieldLabel wrapping a Field turns each option into a choice card. No ids needed. */
 export const ChoiceCards: Story = {
   render: () => (
     <RadioGroup
@@ -95,18 +127,24 @@ export const ChoiceCards: Story = {
       className="max-w-sm"
     >
       {channels.map((c) => (
-        <FieldLabel key={c.value} htmlFor={`card-${c.value}`}>
+        <FieldLabel key={c.value}>
           <Field orientation="horizontal">
             <FieldContent>
               <FieldTitle>{c.label}</FieldTitle>
               <FieldDescription>{c.hint}</FieldDescription>
             </FieldContent>
-            <RadioGroupItem value={c.value} id={`card-${c.value}`} />
+            <RadioGroupItem value={c.value} />
           </Field>
         </FieldLabel>
       ))}
     </RadioGroup>
   ),
+  play: async ({ canvasElement }) => {
+    const sms = within(canvasElement).getByRole("radio", { name: /SMS/ })
+    await expect(sms).toHaveAccessibleDescription("สำหรับผู้เช่าที่ไม่มี LINE")
+    await userEvent.click(sms)
+    await expect(sms).toHaveAttribute("aria-checked", "true")
+  },
 }
 
 const states = ["rest", "focus-visible", "disabled", "invalid"] as const
