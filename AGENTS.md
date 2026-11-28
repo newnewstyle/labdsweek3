@@ -18,7 +18,7 @@ Publishing is planned for Week 4; until then only build and `pnpm pack --dry-run
 
 pnpm workspaces + Turborepo · React 19 · TypeScript (strict) · `@base-ui/react` · CSS Modules with
 Tailwind CSS v4 `@apply` · `cn` (npm package: clsx + tailwind-merge replacement) · `lucide-react` ·
-`sonner` · `tw-animate-css` · `react-day-picker` + `date-fns` (Calendar) · `recharts` (Chart) · tsup + PostCSS · Vitest + Testing Library (jsdom) · Next.js 16 docs
+`sonner` · `tw-animate-css` · `react-day-picker` + `date-fns` (Calendar) · `recharts` (Chart) · Vite library mode + PostCSS · Vitest + Testing Library (jsdom) · Next.js 16 docs
 app · Storybook 10 (`@storybook/react-vite`) · ESLint 9 flat config · Changesets.
 
 pnpm is installed globally via `npm i -g pnpm` (this Node version has no corepack); the version is
@@ -35,11 +35,12 @@ packages/ui/
   src/components/SETUP.md       # one-time consumer setup shown above every usage doc
   src/lib/component-spec.ts     # ComponentSpec type for <Name>.spec.ts (not exported)
   src/hooks/use-mobile.ts       # internal (used by Sidebar, ResponsiveDialog), not exported
-  src/styles/tokens.css         # design tokens: shipped as the top of dist/styles.css
+  src/styles/tokens.css         # design tokens: shipped as dist/styles.css
   src/styles/shadcn-tailwind.css# shadcn custom variants/utilities (copied from the shadcn package)
   src/styles/reference.css      # build-only @reference target for every *.module.css
   postcss.config.mjs            # Tailwind for compiling the CSS Modules
-  tsup.config.ts
+  vite.config.ts                # library build (one output file per source file)
+  tsconfig.build.json           # emits the .d.ts files into dist/
 apps/docs/                      # Next.js docs/playground; depends on @newnewstyle/ui via workspace:*
 apps/storybook/                 # Storybook for reviewing each component's props and states
   .storybook/                   # main.ts (addons, Tailwind vite plugin), preview.ts, preview-head.html
@@ -54,7 +55,7 @@ Run from the repo root.
 
 ```bash
 pnpm install
-pnpm dev                          # tsup --watch for ui + next dev (:3000) + storybook (:6006)
+pnpm dev                          # vite build --watch for ui + next dev (:3000) + storybook (:6006)
 pnpm --filter storybook-app dev   # Storybook only, http://127.0.0.1:6006 (binds 127.0.0.1, not localhost)
 pnpm --filter storybook-app build # static Storybook in apps/storybook/storybook-static (gitignored)
 pnpm build                        # ui first, then docs (turbo ^build)
@@ -74,16 +75,19 @@ deletes `dist/` first, so a running dev server briefly logs "Can't resolve '@new
 
 ## Architecture rules that span multiple files
 
-- **Build (tsup, bundled).** `src/index.ts` is bundled into `dist/index.js` (ESM only). CSS imports
-  use esbuild's `local-css` loader, so `styles.x` in JS maps to scoped names like `Button_button`,
-  and keyframes are renamed per file (`Dialog_enter`). tsup first runs each CSS file through
-  `postcss.config.mjs` (Tailwind) to resolve `@apply`. `onSuccess` then writes
-  `dist/styles.css` = `src/styles/tokens.css` + the compiled component CSS, copies
-  `shadcn-tailwind.css`, and deletes the intermediate `dist/index.css`. The build script deletes
-  `dist/` first so stale files never get packed.
-- **`"use client"`** is a banner on the whole bundle (esbuild strips per-file directives when
-  bundling). Components still render from Server Components; `apps/docs/app/page.tsx` is a Server
-  Component on purpose to catch regressions.
+- **Build (Vite library mode, one file per source file).** `vite.config.ts` builds `src/index.ts`
+  with `preserveModules` (ESM only), so `dist/` mirrors `src/` (`dist/components/Button/Button.js`)
+  and consumers' bundlers drop unused components. Vite runs `postcss.config.mjs` (Tailwind) on each
+  `*.module.css`, scopes class names as `<Component>_<class>` (`Button_button`, keyframes
+  `Dialog_enter`) and emits one CSS file per component, named `Button.css` (not `.module.css`: a
+  consumer's bundler would treat it as a CSS Module and drop the bare import). The `injectCss`
+  plugin adds `import "./Button.css"` to the JS that owns it; `sideEffects: ["**/*.css"]` keeps those
+  imports. `dist/styles.css` is `src/styles/tokens.css` only, plus a copy of `shadcn-tailwind.css`.
+  `.d.ts` files come from `tsc -p tsconfig.build.json`. `emptyOutDir` clears `dist/` each build.
+  Check a change with a Button-only consumer build: its CSS should hold only `Button_*` rules.
+- **`"use client"`** starts every JS file in `dist/` (added once by `injectCss`; the bundler drops
+  per-file directives). Components still render from Server Components; `apps/docs/app/page.tsx` is
+  a Server Component on purpose to catch regressions.
 - **Styles live in CSS Modules, not in TSX.** Components set `data-slot`, `data-variant`,
   `data-size` and merge `cn(styles.x, className)`; variants are CSS selectors such as
   `.button[data-variant="outline"]`, not `cva`. Every rule sits in `@layer components` so a
@@ -103,8 +107,10 @@ deletes `dist/` first, so a running dev server briefly logs "Can't resolve '@new
 - **Fonts.** The package cannot load fonts. Tokens read `--font-plex-thai` / `--font-geist-mono`
   (set by `next/font` in the app/docs) and fall back to the system stack.
 - **How styles reach consumers.** Consumers write `@import "tailwindcss"; @import "@newnewstyle/ui/styles.css";`.
-  `styles.css` must not import Tailwind itself; it imports `tw-animate-css` and
+  `styles.css` (tokens only) must not import Tailwind itself; it imports `tw-animate-css` and
   `./shadcn-tailwind.css` (both must ship), and its `@source "./"` lets Tailwind scan `dist/`.
+  Component CSS reaches the page through each component's own CSS import, so consumers need a
+  bundler that imports CSS from `node_modules` (Next.js, Vite).
   `apps/docs/app/globals.css` mirrors exactly what consumers do; keep it and
   `packages/ui/README.md` in sync.
 - **Imports inside the package** are relative (`../Button`); there are no `@/` aliases. Components
