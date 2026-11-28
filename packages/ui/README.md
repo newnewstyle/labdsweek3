@@ -21,8 +21,10 @@ In your app's main CSS file, import the stylesheet after Tailwind:
 @import "@newnewstyle/ui/styles.css";
 ```
 
-The stylesheet contains the design tokens and all component styles, and tells Tailwind to scan the
-package, so no extra `@source` is needed.
+The stylesheet contains the design tokens and tells Tailwind to scan the package, so no extra
+`@source` is needed. Each component imports its own CSS, so your bundler only ships the styles of
+the components you use. This needs a bundler that handles CSS imported from `node_modules`
+(Next.js and Vite do).
 
 - **Dark mode:** set `data-theme="dark"` on a parent element (with `next-themes`, use
   `attribute="data-theme"`).

@@ -8,7 +8,7 @@
    pnpm add @newnewstyle/ui
    ```
 
-2. **import สไตล์ครั้งเดียว** ในไฟล์ CSS หลักของแอป ต่อจาก Tailwind (token สี, มุมโค้ง และสไตล์ทุก component อยู่ในไฟล์นี้)
+2. **import สไตล์ครั้งเดียว** ในไฟล์ CSS หลักของแอป ต่อจาก Tailwind (token สี มุมโค้ง และฟอนต์อยู่ในไฟล์นี้ ส่วนสไตล์ของแต่ละ component มากับ component นั้นเอง แอปจึงโหลดเฉพาะของที่ใช้)
 
    ```css
    @import "tailwindcss";
